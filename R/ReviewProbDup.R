@@ -98,7 +98,7 @@
 #' # Load PGR passport database
 #' GN <- GN1000
 #'
-#' # Set database fields to use
+#' # Specify as a vector the database fields to be used
 #' GNfields <- c("NationalID", "CollNo", "DonorID", "OtherID1", "OtherID2")
 #'
 #' # Clean the data
@@ -147,6 +147,7 @@
 #'                                                                                                                                           
 #' }
 #' @import data.table
+#' @importFrom methods is
 #' @export
 ReviewProbDup <- function (pdup, db1, db2 = NULL, 
                            extra.db1 = NULL, extra.db2 = NULL,
@@ -178,7 +179,9 @@ ReviewProbDup <- function (pdup, db1, db2 = NULL,
   fields[[1]] <- union(fields[[1]], extra.db1)
   #setDT(db1)
   db1 <- as.data.table(db1)
-  db1[, setdiff(colnames(db1), fields[[1]]) := NULL]
+  if(!identical(setdiff(colnames(db1), fields[[1]]), character(0))){
+    db1[, setdiff(colnames(db1), fields[[1]]) := NULL]
+  }
   db1[, K1_PRIM_ID := get(fields[[1]][1])]
   setcolorder(db1, neworder = union("K1_PRIM_ID",
                                     setdiff(colnames(db1), "K1_PRIM_ID")))
@@ -200,7 +203,9 @@ ReviewProbDup <- function (pdup, db1, db2 = NULL,
     fields[[2]] <- union(fields[[2]], extra.db2)
     #setDT(db2)
     db2 <- as.data.table(db2)
-    db2[, setdiff(colnames(db2), fields[[2]]) := NULL]
+    if(!identical(setdiff(colnames(db2), fields[[1]]), character(0))) {
+      db2[, setdiff(colnames(db2), fields[[2]]) := NULL]
+    }
     db2[, K2_PRIM_ID := get(fields[[2]][1])]
     setcolorder(db2, neworder = union("K2_PRIM_ID",
                                       setdiff(colnames(db2), "K2_PRIM_ID")))

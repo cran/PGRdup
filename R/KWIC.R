@@ -43,9 +43,10 @@
 #'   \tabular{ll}{ \code{KWIC} \tab The KWIC index in the form of a data frame. 
 #'   \cr \code{KeywordFreq} \tab A data frame of the keywords detected with 
 #'   frequency greater than \code{min.freq}. \cr \code{Fields} \tab A character 
-#'   vector with the names of the PGR database fields from which the keywords
+#'   vector with the names of the PGR database fields from which the keywords 
 #'   were extracted. \cr }
-#' @seealso \code{\link[data.table]{data.table}}
+#' @seealso \code{\link[data.table]{data.table}},
+#'   \code{\link[PGRdup]{print.KWIC}}
 #' @references Knupffer, H. (1988). The European Barley Database of the ECP/GR: 
 #'   an introduction. Die Kulturpflanze, 36(1), 135-162.\cr \cr Knupffer, H., 
 #'   Frese, L., & Jongen, M. W. M. (1997). Using central crop databases: 
@@ -57,24 +58,25 @@
 #' @examples
 #' # Load PGR passport database
 #' GN <- GN1000
-#'
-#' # Set database fields to use
+#' 
+#' # Specify as a vector the database fields to be used
 #' GNfields <- c("NationalID", "CollNo", "DonorID", "OtherID1", "OtherID2")
-#'
+#' 
 #' # Clean the data
 #' GN[GNfields] <- lapply(GN[GNfields], function(x) DataClean(x))
-#'
+#' 
 #' \dontrun{
 #' 
 #' # Generate KWIC index
 #' GNKWIC <- KWIC(GN, GNfields)
-#'
+#' GNKWIC
+#' 
 #' # Retrieve the KWIC index from the KWIC object
 #' KWIC <- GNKWIC[[1]]
-#'
+#' 
 #' # Retrieve the keyword frequencies from the KWIC object
 #' KeywordFreq <- GNKWIC[[2]]
-#'
+#' 
 #' # Show error in case of duplicates and NULL values 
 #' # in the primary key/ID field "NationalID"
 #' GN[1001:1005,] <- GN[1:5,]
@@ -83,7 +85,9 @@
 #' }
 #' @import data.table
 #' @importFrom stringi stri_split_fixed
-#' @export
+#' @export KWIC
+#' @export print.KWIC
+#' @rdname KWIC
 KWIC <- function (x, fields, min.freq = 10)
 {
   if (is.data.frame(x) == FALSE) {
@@ -105,7 +109,7 @@ KWIC <- function (x, fields, min.freq = 10)
   #setDT(x)
   x <- as.data.table(x)
   # Convert the fields in x to character
-  for (col in fields) set(x, j=col, value=as.character(x[[col]]))
+  for (col in fields) set(x, j = col, value = as.character(x[[col]]))
   # Convert NAs to empty strings
   for (j in fields) set(x , which(is.na(x[[j]])), j, "")
   setDF(x)

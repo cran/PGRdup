@@ -42,7 +42,7 @@
 #' #' # Load PGR passport database
 #' GN <- GN1000
 #'
-#' # Set database fields to use
+#' # Specify as a vector the database fields to be used
 #' GNfields <- c("NationalID", "CollNo", "DonorID", "OtherID1", "OtherID2")
 #'
 #' # Clean the data
@@ -83,6 +83,7 @@
 #' @seealso 
 #'   \code{\link[PGRdup]{ProbDup}},
 #' @import data.table
+#' @importFrom methods is
 #' @export
 ParseProbDup <- function (pdup, max.count = 30, 
                           insert.blanks  = TRUE) {

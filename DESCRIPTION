@@ -1,7 +1,7 @@
 Package: PGRdup
-Title: Discover Probable Duplicates in Plant Genetic Resources (PGR)
+Title: Discover Probable Duplicates in Plant Genetic Resources
         Collections
-Version: 0.2
+Version: 0.2.1
 Authors@R: c(
     person(c("J.", "Aravind"),
     email = "aravindj@nbpgr.ernet.in",
@@ -18,21 +18,24 @@ Description: Provides functions to aid the identification of probable/possible
     duplicates in Plant Genetic Resources (PGR) collections using
     'passport databases' comprising of information records of each constituent
     sample. These include methods for cleaning the data, creation of a
-    searchable Keyword in Context (KWIC) index of keywords associated with
+    searchable Key Word in Context (KWIC) index of keywords associated with
     sample records and the identification of nearly identical records with
     similar information by fuzzy, phonetic and semantic matching of keywords.
 Depends: R (>= 3.0.2)
-Imports: data.table (>= 1.9.3), igraph, stringdist (>= 0.5), stringi
+Imports: data.table (>= 1.9.3), igraph, stringdist (>= 0.5), stringi,
+        methods, utils, stats
+Suggests: diagram, wordcloud, microbenchmark, knitr
 Copyright: 2014, ICAR-NBPGR
 License: GPL-2 | GPL-3
 LazyData: true
-Packaged: 2015-04-14 07:02:17 UTC; sony
+VignetteBuilder: knitr
+NeedsCompilation: yes
+Packaged: 2015-07-23 11:40:37 UTC; lenovo
 Author: J. Aravind [aut, cre],
   J. Radhamani [aut],
   Kalyani Srinivasan [aut],
   B. Ananda Subhash [aut],
   R. K. Tyagi [aut]
 Maintainer: J. Aravind <aravindj@nbpgr.ernet.in>
-NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2015-04-14 09:25:54
+Date/Publication: 2015-07-23 15:24:50

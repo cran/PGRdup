@@ -47,7 +47,7 @@
 #' # Load PGR passport database
 #' GN <- GN1000
 #'
-#' # Set database fields to use
+#' # Specify as a vector the database fields to be used
 #' GNfields <- c("NationalID", "CollNo", "DonorID", "OtherID1", "OtherID2")
 #'
 #' # Clean the data
@@ -125,6 +125,31 @@ ReconstructProbDup <- function (rev) {
     # Check if core fields are present in rev and stop if not
     stop('One or more core fields are missing in "rev"')
   }
+  if(!is.numeric(rev$SET_NO)) {
+    stop('"SET_NO" is not of class numeric or integer')
+  }
+  if(!is.character(rev$TYPE)) {
+    stop('"TYPE" is not of class character')
+  }
+  if(!is.character(rev[, core2[j]])) {
+    stop('"K[*]" is not of class character')
+  }
+  if(!is.character(rev$PRIM_ID)) {
+    stop('"PRIM_ID" is not of class character')
+  }
+  if(!is.character(rev$IDKW)) {
+    stop('"IDKW" is not of class character')
+  }
+  if(!is.numeric(rev$COUNT)) {
+    stop('"COUNT" is not of class numeric or integer')
+  }
+  if(!is.character(rev$DEL)) {
+    stop('"DEL" is not of class character')
+  }
+  if(!is.numeric(rev$SPLIT)) {
+    stop('"SPLIT" is not of class numeric or integer')
+  }
+  
   # Retrieve method and fields
   method <- regmatches(core2[j], gregexpr("(?<=\\[).*?(?=\\])", core2[j], perl=T))[[1]]
   fields <- list(k1 = NULL, k2 = NULL)
@@ -164,7 +189,9 @@ ReconstructProbDup <- function (rev) {
   rev <- rev[, list(ID = paste0(sort(unique(PRIM_ID)), collapse=", "),
                     IDKW = paste0(sort(unique(IDKW)), collapse=", ")), by = c("TYPE", "SET_NO")]
   rev[, COUNT := stri_count_fixed(ID, ",") + 1]
+  rev <- rev[COUNT != 1]
   setcolorder(rev, c("SET_NO", "TYPE", "ID", "IDKW", "COUNT"))
+  rev <- unique(rev, by=c("TYPE", "ID", "IDKW", "COUNT"))
   
   out <- list(FuzzyDuplicates = NULL, PhoneticDuplicates = NULL,
               SemanticDuplicates = NULL, DisjointDupicates = NULL)

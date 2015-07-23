@@ -5,7 +5,7 @@ year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
 vers <- paste("R package version", meta$Version)
 
 citEntry(entry  = "Manual",
-         title  = "PGRdup: Methods to Aid Identification of Probable Duplicates in PGR Passport Databases",
+         title  = "PGRdup: Discover Probable Duplicates in Plant Genetic Resources Collections",
          
          author = c(person(c("Aravind", "J"),
                            email = "aravindj@nbpgr.ernet.in",
@@ -22,6 +22,6 @@ citEntry(entry  = "Manual",
          note = paste(vers),
          
          textVersion = paste(
-           "Aravind, J., Radhamani, J., Kalyani Srinivasan, Ananda Subhash, B., Tyagi, R. K.(",
-           year, ").  PGRdup: Methods to Aid Identification of Probable Duplicates in PGR Passport Databases. ",
+           "Aravind, J., J. Radhamani, Kalyani Srinivasan, B. Ananda Subhash, and R. K. Tyagi (",
+           year, ").  PGRdup: Discover Probable Duplicates in Plant Genetic Resources (PGR) Collections. ",
            vers, ".", sep=""))
