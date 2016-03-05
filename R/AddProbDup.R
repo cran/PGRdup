@@ -102,19 +102,19 @@
 #' @import data.table
 #' @importFrom methods is
 #' @export
-AddProbDup <- function (pdup, db, addto = c("I", "II"), max.count = 30) {
+AddProbDup <- function(pdup, db, addto = c("I", "II"), max.count = 30) {
   if (!is(pdup, "ProbDup")) {
     stop('"pdup" is not of class ProbDup')
   }
-  by <- match.arg(addto)
+  addto <- match.arg(addto, several.ok = FALSE)
   method <- attributes(pdup)$method
-  if (addto == "I") { 
+  if (addto == "I") {
     p <- "[K1]"
     fields <- attributes(pdup)$fields[[1]]
   }
   if (addto == "II") {
-    if(is.null(attributes(pdup)$fields[[2]])) {
-      stop('argument "addto = "II"", but pdup was not generated using a second KWIC index' )
+    if (is.null(attributes(pdup)$fields[[2]])) {
+      stop("argument 'addto = 'II', but pdup was not generated using a second KWIC index" )
     }
     p <- "[K2]"
     fields <- attributes(pdup)$fields[[2]]
@@ -123,7 +123,7 @@ AddProbDup <- function (pdup, db, addto = c("I", "II"), max.count = 30) {
     # Check if db is a data frame and stop if not
     stop('"db" is not a data frame')
   }
-  if(!fields[1] %in% colnames(db)) {
+  if (!fields[1] %in% colnames(db)) {
     stop(paste('Column(field) matching the primary ID/key "',
                fields[1],'" is not found in "db"', sep = ""))
   }
@@ -135,18 +135,19 @@ AddProbDup <- function (pdup, db, addto = c("I", "II"), max.count = 30) {
   db <- as.data.table(db)
   setkeyv(db, fields[[1]])
   # Retrieve the sets with "[K*]" according to argument addto
-  pdup <- lapply(pdup, function(x) x[grepl(p , x$ID, fixed=TRUE),])
+  pdup <- lapply(pdup, function(x) x[grepl(p , x$ID, fixed = TRUE),])
   #invisible(lapply(seq_along(pdup), function(i) pdup[[i]]$PRIM_ID <<- gsub(p, "", pdup[[i]]$PRIM_ID, fixed = TRUE)))
   types <- c("F", "P", "S", "D")
   types2 <- c("Fuzzy", "Phonetic", "Semantic", "Disjoint")
   N <- length(pdup)
   for (i in 1:N) {
-    if(!is.null(pdup[[i]])) {
+    if (!is.null(pdup[[i]])) {
       #setDT(pdup[[i]])
       pdup[[i]] <- as.data.table(pdup[[i]])
       pdup[[i]] <- subset(pdup[[i]], COUNT <= max.count)
       pdup[[i]][, TYPE := NULL]
-      pdup[[i]] <- pdup[[i]][, list(PRIM_ID = unlist(strsplit(ID , ", " ))) , by = list(SET_NO, IDKW, ID)]
+      pdup[[i]] <- pdup[[i]][, list(PRIM_ID = unlist(strsplit(ID , ", " ))) ,
+                             by = list(SET_NO, IDKW, ID)]
       if (method == "b" | method == "c") {
         if (addto == "I") {
           pdup[[i]] <- pdup[[i]][grepl("\\[K1\\].*", PRIM_ID, perl = TRUE)]
@@ -158,19 +159,25 @@ AddProbDup <- function (pdup, db, addto = c("I", "II"), max.count = 30) {
       pdup[[i]][, PRIM_ID := gsub(p, "", pdup[[i]]$PRIM_ID, fixed = TRUE)]
       setkey(pdup[[i]], PRIM_ID)
       # Aggregate according to ID
-      pdup[[i]] <- pdup[[i]][, list(SET_NO = paste0(sort(unique(SET_NO)), collapse = ", "), 
-                                    IDKW = paste0(sort(unique(unlist(strsplit(IDKW , ", ")))), collapse = ", "),
-                                    ID = paste0(sort(unique(unlist(strsplit(ID, ", ")))), collapse = ", ")), by = PRIM_ID]
+      pdup[[i]] <- pdup[[i]][, list(SET_NO = paste0(sort(unique(SET_NO)),
+                                                    collapse = ", "),
+                                    IDKW = paste0(sort(unique(unlist(strsplit(IDKW , ", ")))),
+                                                  collapse = ", "),
+                                    ID = paste0(sort(unique(unlist(strsplit(ID, ", ")))),
+                                                collapse = ", ")), by = PRIM_ID]
       setkey(pdup[[i]], PRIM_ID)
       setcolorder(pdup[[i]], c("PRIM_ID", "SET_NO", "ID", "IDKW"))
-      setnames(pdup[[i]], old = colnames(pdup[[i]]), new = paste(types[i], colnames(pdup[[i]]), sep = "_"))
-      setnames(pdup[[i]], old = paste(types[i], "PRIM_ID", sep = "_"), new = fields[1])
-      if (length(setdiff(pdup[[i]][,get(fields[1])], db[,get(fields[1])])) != 0) {
-        warning(paste('Encountered primary ID records in',
-                      types2[i], 'probable duplicate sets missing from "db".',
-                      '\nOnly matching records are merged'))
+      setnames(pdup[[i]], old = colnames(pdup[[i]]),
+               new = paste(types[i], colnames(pdup[[i]]), sep = "_"))
+      setnames(pdup[[i]], old = paste(types[i], "PRIM_ID", sep = "_"),
+               new = fields[1])
+      if (length(setdiff(pdup[[i]][,get(fields[1])],
+                         db[,get(fields[1])])) != 0) {
+        warning(paste("Encountered primary ID records in",
+                      types2[i], "probable duplicate sets missing from 'db'.",
+                      "\nOnly matching records are merged"))
       }
-      db <- merge(db, pdup[[i]], all.x=TRUE)
+      db <- merge(db, pdup[[i]], all.x = TRUE)
     }
   }
   rm(pdup)

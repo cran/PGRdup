@@ -91,12 +91,11 @@
 #'            "#648-4 (Gwalior)", "TG4;U/4/47/13", "EC0021003")
 #' DataClean(names)
 #' @export
-DataClean <- function (x, fix.comma = TRUE, fix.semcol = TRUE, fix.col = TRUE,
+DataClean <- function(x, fix.comma = TRUE, fix.semcol = TRUE, fix.col = TRUE,
                        fix.bracket = TRUE, fix.punct = TRUE, fix.space = TRUE,
-                       fix.sep = TRUE, fix.leadzero = TRUE)
-{    
-  if(!is.character(x)){
-    warning('x is not of type character; coerced to character')
+                       fix.sep = TRUE, fix.leadzero = TRUE) {
+  if (!is.character(x)) {
+    warning("x is not of type character; coerced to character")
     x <- as.character(x)
   }
     x[is.na(x)]   <- ""  # Convert NAs to empty strings
@@ -117,17 +116,18 @@ DataClean <- function (x, fix.comma = TRUE, fix.semcol = TRUE, fix.col = TRUE,
     }
     if (fix.punct) {
     # Remove all punctuations
-    x <- gsub(pattern = "[[:punct:]]", replacement= "", x, perl=TRUE)
+    x <- gsub(pattern = "[[:punct:]]", replacement = "", x, perl = TRUE)
     }
     if (fix.space) {
     # replace all space characters with space (" ")
     x <- gsub(pattern = "[[:space:]]", replacement = " ", x)
     # replace multiple spaces with single space
-    x <- gsub(pattern = '([[:space:]])\\1+', replacement = '\\1', x)
+    x <- gsub(pattern = "([[:space:]])\\1+", replacement = "\\1", x)
     }
     if (fix.sep) {
     # Remove space when alphabetic characters followed by digits
-    x <- gsub(pattern="([a-zA-Z]) ([0-9])", replacement= "\\1\\2", x, perl=TRUE)
+    x <- gsub(pattern = "([a-zA-Z]) ([0-9])", replacement = "\\1\\2", x,
+              perl = TRUE)
     }
     if (fix.leadzero) {
     # Remove leading zeros

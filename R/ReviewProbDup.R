@@ -149,7 +149,7 @@
 #' @import data.table
 #' @importFrom methods is
 #' @export
-ReviewProbDup <- function (pdup, db1, db2 = NULL, 
+ReviewProbDup <- function (pdup, db1, db2 = NULL,
                            extra.db1 = NULL, extra.db2 = NULL,
                            max.count = 30, insert.blanks  = TRUE) {
   if (!is(pdup, "ProbDup")) {
@@ -158,28 +158,28 @@ ReviewProbDup <- function (pdup, db1, db2 = NULL,
   method <- attributes(pdup)$method
   fields <- attributes(pdup)$fields
   if (method == "c" | method == "b") {
-    if(is.null(db2)) {
-      stop(paste('argument "db2" is missing, with no default.', 
-                 '\nSecond database is to be specified as method "', 
-                 method,'" was used to generate "pdup"', sep = ""))
+    if (is.null(db2)) {
+      stop(paste("argument 'db2' is missing, with no default.",
+                 "\nSecond database is to be specified as method ",
+                 method," was used to generate 'pdup'", sep = ""))
     }
   }
   if (is.element(FALSE, fields[[1]] %in% colnames(db1))) {
     # Check if fields are present in db1 and stop if not
-    stop('One or more kwic1 fields are missing in "db1"')
+    stop("One or more kwic1 fields are missing in 'db1'")
   }
   if (!is.null(extra.db1) && !is.vector(extra.db1, mode = "character")) {
-    stop ('"extra.db1" is not a character vector')
+    stop('"extra.db1" is not a character vector')
   }
   if (is.element(FALSE, extra.db1 %in% colnames(db1))) {
     # Check if extra fields are present in db1 and stop if not
-    warning(paste('One or more extra kwic1 fields are missing in "db1".',
-                  'Only the default kwic1 fields will be retrieved'))
+    warning(paste("One or more extra kwic1 fields are missing in 'db1'.",
+                  "Only the default kwic1 fields will be retrieved"))
   }
   fields[[1]] <- union(fields[[1]], extra.db1)
   #setDT(db1)
   db1 <- as.data.table(db1)
-  if(!identical(setdiff(colnames(db1), fields[[1]]), character(0))){
+  if (!identical(setdiff(colnames(db1), fields[[1]]), character(0))){
     db1[, setdiff(colnames(db1), fields[[1]]) := NULL]
   }
   db1[, K1_PRIM_ID := get(fields[[1]][1])]
@@ -190,20 +190,20 @@ ReviewProbDup <- function (pdup, db1, db2 = NULL,
   if (method == "c" | method == "b") {
     if (is.element(FALSE, fields[[2]] %in% colnames(db2)) == TRUE) {
       # Check if fields are present in db2 and stop if not
-      stop('One or more kwic2 fields are missing in "db2"')
+      stop("One or more kwic2 fields are missing in 'db2'")
     }
     if (!is.null(extra.db2) && !is.vector(extra.db2, mode = "character")) {
-      stop ('"extra.db2" is not a character vector')
+      stop("'extra.db2' is not a character vector")
     }
     if (is.element(FALSE, extra.db2 %in% colnames(db2)) == TRUE) {
       # Check if extra fields are present in db2 and stop if not
-      warning(paste('One or more extra kwic2 fields are missing in "db2".',
-                    'Only the default kwic2 fields will be retrieved'))
+      warning(paste("One or more extra kwic2 fields are missing in 'db2'.",
+                    "Only the default kwic2 fields will be retrieved"))
     }
     fields[[2]] <- union(fields[[2]], extra.db2)
     #setDT(db2)
     db2 <- as.data.table(db2)
-    if(!identical(setdiff(colnames(db2), fields[[1]]), character(0))) {
+    if (!identical(setdiff(colnames(db2), fields[[1]]), character(0))) {
       db2[, setdiff(colnames(db2), fields[[2]]) := NULL]
     }
     db2[, K2_PRIM_ID := get(fields[[2]][1])]
@@ -222,81 +222,91 @@ ReviewProbDup <- function (pdup, db1, db2 = NULL,
       pdup[[i]] <- subset(pdup[[i]], COUNT <= max.count)
       pdup[[i]] <- unique(pdup[[i]])
       # Reset SET_NO to take into account deleted sets with coutn > max.count
-      pdup[[i]][, Seq:=1:.N]
+      pdup[[i]][, Seq := 1:.N]
       # Cast ID and IDKW by SET_NO
-      pdup[[i]] <- pdup[[i]][, .(unlist(strsplit(IDKW, ", ", TRUE))), by = list(SET_NO, TYPE, COUNT)][,
-                               .(IDKW = toString(V1)), .(SET_NO, TYPE, COUNT, PRIM_ID = gsub(":.*", "", V1))]
+      pdup[[i]] <- pdup[[i]][, .(unlist(strsplit(IDKW, ", ", TRUE))),
+                             by = list(SET_NO, TYPE, COUNT)][,
+                               .(IDKW = toString(V1)), .(SET_NO, TYPE, COUNT,
+                                                         PRIM_ID = gsub(":.*", "", V1))]
       # Create K1_PRIM_ID column for merging with db1
-      pdup[[i]][,K1_PRIM_ID:= gsub("\\[K2\\].*", "", PRIM_ID, perl = TRUE)]
-      pdup[[i]][,K1_PRIM_ID:= gsub("\\[K1\\]", "", K1_PRIM_ID, perl = TRUE)]
-      pdup[[i]][, K1_PRIM_ID:= as.character(K1_PRIM_ID)]
+      pdup[[i]][, K1_PRIM_ID := gsub("\\[K2\\].*", "", PRIM_ID, perl = TRUE)]
+      pdup[[i]][, K1_PRIM_ID := gsub("\\[K1\\]", "", K1_PRIM_ID, perl = TRUE)]
+      pdup[[i]][, K1_PRIM_ID := as.character(K1_PRIM_ID)]
       setkey(pdup[[i]],K1_PRIM_ID)
       # Check for IDs in pdup missing in db1
-      if (length(setdiff(pdup[[i]]$K1_PRIM_ID[pdup[[i]]$K1_PRIM_ID != ""], db1$K1_PRIM_ID)) != 0) {
-        warning(paste('Encountered primary ID records in',
-                      types2[i], 'probable duplicate sets missing from "db1".',
-                      '\nOnly matching records are merged'))
+      if (length(setdiff(pdup[[i]]$K1_PRIM_ID[pdup[[i]]$K1_PRIM_ID != ""],
+                         db1$K1_PRIM_ID)) != 0) {
+        warning(paste("Encountered primary ID records in",
+                      types2[i], "probable duplicate sets missing from 'db1'.",
+                      "\nOnly matching records are merged"))
       }
       # Merge with db1
       pdup[[i]] <- merge(pdup[[i]],db1, all.x = TRUE)
-      pdup[[i]][, K1_PRIM_ID:=NULL]
+      pdup[[i]][, K1_PRIM_ID := NULL]
       setkey(pdup[[i]],"SET_NO")
       # Set prefix to merged fields
-      setnames(pdup[[i]], old = fields[[1]], new =  paste("K1", fields[[1]], sep = "_"))
+      setnames(pdup[[i]], old = fields[[1]],
+               new =  paste("K1", fields[[1]], sep = "_"))
       if (method == "c" | method == "b") {
         # Create K2_PRIM_ID column for merging with db2
-        pdup[[i]][,K2_PRIM_ID:= gsub("\\[K1\\].*", "", PRIM_ID, perl = TRUE)]
-        pdup[[i]][,K2_PRIM_ID:= gsub("\\[K2\\]", "", K2_PRIM_ID, perl = TRUE)]
-        pdup[[i]][, K2_PRIM_ID:= as.character(K2_PRIM_ID)]
+        pdup[[i]][, K2_PRIM_ID := gsub("\\[K1\\].*", "", PRIM_ID, perl = TRUE)]
+        pdup[[i]][, K2_PRIM_ID := gsub("\\[K2\\]", "", K2_PRIM_ID, perl = TRUE)]
+        pdup[[i]][, K2_PRIM_ID := as.character(K2_PRIM_ID)]
         setkey(pdup[[i]],K2_PRIM_ID)
         # Check for IDs in pdup missing in db1
-        if (length(setdiff(pdup[[i]]$K2_PRIM_ID[pdup[[i]]$K2_PRIM_ID != ""], db2$K2_PRIM_ID)) != 0) {
-          warning(paste('Encountered primary ID records in',
-                        types2[i], 'probable duplicate sets missing from "db2".',
-                        '\nOnly matching records are merged'))
+        if (length(setdiff(pdup[[i]]$K2_PRIM_ID[pdup[[i]]$K2_PRIM_ID != ""],
+                           db2$K2_PRIM_ID)) != 0) {
+          warning(paste("Encountered primary ID records in",
+                        types2[i],
+                        "probable duplicate sets missing from 'db2'.",
+                        "\nOnly matching records are merged"))
         }
         # Merge with db1
         pdup[[i]] <- merge(pdup[[i]],db2, all.x = TRUE)
-        pdup[[i]][, K2_PRIM_ID:=NULL]
+        pdup[[i]][, K2_PRIM_ID := NULL]
         setkey(pdup[[i]],"SET_NO")
-        setnames(pdup[[i]], old = fields[[2]], new =  paste("K2", fields[[2]], sep = "_"))
+        setnames(pdup[[i]], old = fields[[2]],
+                 new =  paste("K2", fields[[2]], sep = "_"))
       }
     }
   }
   # rbind pdup list
   pdup <- rbindlist(pdup)
   # Split K* from PRIM_ID column
-  pdup[,PRIM_ID:= gsub("\\]", "\\]_", PRIM_ID, perl = TRUE)]
-  pdup[,K:= gsub("_.*", "", PRIM_ID, perl = TRUE)]
-  pdup[,PRIM_ID:= gsub("\\[K1\\]_", "", PRIM_ID, perl = TRUE)]
-  pdup[,PRIM_ID:= gsub("\\[K2\\]_", "", PRIM_ID, perl = TRUE)]
+  pdup[, PRIM_ID := gsub("\\]", "\\]_", PRIM_ID, perl = TRUE)]
+  pdup[, K := gsub("_.*", "", PRIM_ID, perl = TRUE)]
+  pdup[, PRIM_ID := gsub("\\[K1\\]_", "", PRIM_ID, perl = TRUE)]
+  pdup[, PRIM_ID := gsub("\\[K2\\]_", "", PRIM_ID, perl = TRUE)]
   # Add review columns
-  pdup[,DEL:= "N" ]
-  pdup[,SPLIT:= 0 ]
+  pdup[,DEL := "N" ]
+  pdup[,SPLIT := 0 ]
   # Reset column order
   nameslist <- union(c("SET_NO", "TYPE", "K", "PRIM_ID",
-                       "IDKW", "DEL", "SPLIT", "COUNT"), 
+                       "IDKW", "DEL", "SPLIT", "COUNT"),
                     colnames(pdup))
-  setcolorder(x=pdup, neworder = nameslist)
+  setcolorder(x = pdup, neworder = nameslist)
   # Add prefix to additional fields
-  if (!is.null(extra.db1) && !is.element(FALSE, 
+  if (!is.null(extra.db1) && !is.element(FALSE,
                                         paste("K1", extra.db1, sep = "_") %in% colnames(pdup))) {
-    setnames(pdup, old = paste("K1", extra.db1, sep = "_"), new = paste("K1X", extra.db1, sep = "_"))
+    setnames(pdup, old = paste("K1", extra.db1, sep = "_"),
+             new = paste("K1X", extra.db1, sep = "_"))
   }
   if (method == "c" | method == "b") {
-    if (!is.null(extra.db2) && !is.element(FALSE, 
-                                          paste("K2", extra.db2, sep = "_") %in% colnames(pdup))) {
-      setnames(pdup, old = paste("K2", extra.db2, sep = "_"), new = paste("K2X", extra.db2, sep = "_"))
+    if (!is.null(extra.db2) && !is.element(FALSE,
+                                          paste("K2", extra.db2,
+                                                sep = "_") %in% colnames(pdup))) {
+      setnames(pdup, old = paste("K2", extra.db2, sep = "_"),
+               new = paste("K2X", extra.db2, sep = "_"))
     }
   }
   # Insert blanks
   setkey(pdup, SET_NO)
   setkey(pdup, NULL)
   if (insert.blanks  == TRUE) {
-    pdup[,TEMP:= as.factor(SET_NO)]
-    pdup[,TEMP:= interaction(pdup$TEMP, as.factor(pdup$TYPE), drop=TRUE)]
+    pdup[, TEMP := as.factor(SET_NO)]
+    pdup[, TEMP := interaction(pdup$TEMP, as.factor(pdup$TYPE), drop = TRUE)]
     setattr(pdup$TEMP,"levels", seq(from = 1, to = length(levels(pdup$TEMP))))
-    pdup[,TEMP:= as.numeric(TEMP)]
+    pdup[, TEMP := as.numeric(TEMP)]
     pdup <- setDT(pdup)[pdup[, c(.I, NA), TEMP]$V1][!.N]
     pdup[, TEMP := NULL]
     pdup[is.na(TYPE), TYPE := ""]

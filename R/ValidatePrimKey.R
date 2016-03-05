@@ -63,36 +63,37 @@
 #' GN[1001,3] <- ""
 #' ValidatePrimKey(x=GN, prim.key="NationalID")}
 #' @export
-ValidatePrimKey <- function (x, prim.key)
-{
+ValidatePrimKey <- function(x, prim.key) {
   if (is.data.frame(x) == FALSE) {
     # Check if x is a data frame and stop if not
-    stop('x is not a data frame')
+    stop("x is not a data frame")
   }
   if (is.vector(prim.key) == FALSE) {
     # Check if prim.key is a vector or not
-    stop('prim.key is not a vector')
+    stop("prim.key is not a vector")
   }
   if (length(prim.key) > 1) {
     # Check if only one field is given as input and use first element if not
     prim.key <- prim.key[1]
-    warning('prim.key length >1; Only the first element is used')
+    warning("prim.key length >1; Only the first element is used")
   }
   if (is.element("FALSE", prim.key %in% colnames(x)) == TRUE) {
     # Check if prim.key field is present in x and stop if not
     stop("prim.key field missing in x")
   }
-  Result <- list(message1 = NULL, Duplicates = NULL, message2 = NULL, NullRecords = NULL)
+  Result <- list(message1 = NULL, Duplicates = NULL, message2 = NULL,
+                 NullRecords = NULL)
   # Convert NAs to empty strings
   x[prim.key][is.na(x[,prim.key])] <- ""
   if (is.element("TRUE", duplicated(x[prim.key]))) {
     # Check if duplicated records are there in prim.key
     Result$message1 <- "ERROR: Duplicated records found in prim.key field"
     message(Result$message1)
-    x$primdup <- duplicated(x[prim.key]) | duplicated(x[prim.key], fromLast = TRUE)
+    x$primdup <- duplicated(x[prim.key]) | duplicated(x[prim.key],
+                                                      fromLast = TRUE)
     Result$Duplicates <- subset(x, primdup == TRUE)
     Result$Duplicates[, "primdup"] <- NULL
-    Result$Duplicates <- Result$Duplicates[order(Result$Duplicates[prim.key]),] 
+    Result$Duplicates <- Result$Duplicates[order(Result$Duplicates[prim.key]),]
   } else {
     Result$message1 <- "OK: No duplicated records found in prim.key field"
     message(Result$message1)
@@ -108,4 +109,3 @@ ValidatePrimKey <- function (x, prim.key)
   }
   return(Result)
 }
-

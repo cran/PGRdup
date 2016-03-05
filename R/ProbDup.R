@@ -200,6 +200,7 @@
 #' GN1 <- GN1000[!grepl("^ICG", GN1000$DonorID), ]
 #' GN1$DonorID <- NULL
 #' GN2 <- GN1000[grepl("^ICG", GN1000$DonorID), ]
+#' GN2 <- GN2[!grepl("S", GN2$DonorID), ]
 #' GN2$NationalID <- NULL
 #' 
 #' # Specify as a vector the database fields to be used
@@ -287,14 +288,12 @@ ProbDup <- function (kwic1, kwic2 = NULL, method = c("a", "b", "c"),
                      max.alpha = 4, max.digit = Inf,
                      phonetic = TRUE, encoding = c("primary", "alternate"),
                      phon.min.alpha = 5, min.enc = 3,
-                     semantic = FALSE, syn = NULL)
-{  
+                     semantic = FALSE, syn = NULL) {
   # Preliminary Checks
   ###################################################################
   # Check method argument
   method <- match.arg(method)
   fields <- list(k1 = NULL, k2 = NULL)
-  
   # Check excep argument
   if (!is.null(excep) && is.vector(excep, mode = "character") == FALSE) {
     stop('"excep" is not a character vector')
@@ -304,7 +303,6 @@ ProbDup <- function (kwic1, kwic2 = NULL, method = c("a", "b", "c"),
   } else {
     excep <- ""
   }
-  
   # Check if kwic 1 is present
   if (is.null(kwic1)) {
     stop('"kwic1" is missing')
@@ -316,8 +314,7 @@ ProbDup <- function (kwic1, kwic2 = NULL, method = c("a", "b", "c"),
   } else {
     stop('"kwic1" is not of class KWIC')
   }
-  
-  # Assign and check query and source kwic indexes according to methods  
+  # Assign and check query and source kwic indexes according to methods
   if (method == "a") {
     kwic2 <- NULL
   }
@@ -337,29 +334,30 @@ ProbDup <- function (kwic1, kwic2 = NULL, method = c("a", "b", "c"),
   if (phonetic) {
     encoding <- match.arg(encoding)
   }
-  
   # Check syn argument
   if (semantic) {
     if (is.null(syn)) {
       stop('"syn" is missing')
     }
-    if (!is.list(syn)){
+    if (!is.list(syn)) {
       stop('"syn" is not a list')
     }
-    if(is.element(FALSE, as.logical(lapply(syn, function(x) is.character(x))))){
+    if (is.element(FALSE, as.logical(lapply(syn,
+                                           function(x) is.character(x))))) {
       warning('list "syn" had non character vectors; coerced to character')
       syn <-  as.logical(lapply(syn, function(x) as.character(x)))
     }
     nsyn1 <- length(syn)
     syn <- fix.syn(syn)
     nsyn2 <- length(syn)
-    if(nsyn1 != nsyn2) {
+    if (nsyn1 != nsyn2) {
       warning('synsets in list "syn" with common strings were merged')
     }
     rm(nsyn1, nsyn2)
   }
   # Create the output list
-  out <- list(FuzzyDuplicates = NULL, PhoneticDuplicates = NULL, SemanticDuplicates = NULL)
+  out <- list(FuzzyDuplicates = NULL, PhoneticDuplicates = NULL,
+              SemanticDuplicates = NULL)
   attr(out, "method") <- method
   attr(out, "fields") <- fields
   rm(fields)
@@ -367,54 +365,59 @@ ProbDup <- function (kwic1, kwic2 = NULL, method = c("a", "b", "c"),
   ###################################################################
   kwicQ <- as.data.table(kwic1)
   rm(kwic1)
-  kwicQ[, PRIM_ID := gsub('([[:space:]])\\1*', '', PRIM_ID)]
+  kwicQ[, PRIM_ID := gsub("([[:space:]])\\1*", "", PRIM_ID)]
   kwicQ[, PRIM_ID := paste("[K1]", PRIM_ID, sep = "")]
-  kwicQ[, IDKW := paste(PRIM_ID, KEYWORD, sep=":")]
+  kwicQ[, IDKW := paste(PRIM_ID, KEYWORD, sep = ":")]
   if (method == "a" | method == "b") {
-    kwicQ <- kwicQ[, list(PRIM_ID = paste0(setdiff(sort(unique(unlist(strsplit(get("PRIM_ID"), split=", ")))), ""), collapse=", "),
-                          IDKW = paste0(setdiff(sort(unique(unlist(strsplit(get("IDKW"), split=", ")))), ""), collapse=", ")), by = "KEYWORD"]
-  
+    kwicQ <- kwicQ[, list(PRIM_ID = paste0(setdiff(sort(unique(unlist(strsplit(get("PRIM_ID"),
+                                                                               split = ", ")))), ""), collapse = ", "),
+                          IDKW = paste0(setdiff(sort(unique(unlist(strsplit(get("IDKW"),
+                                                                            split = ", ")))), ""), collapse = ", ")),
+                   by = "KEYWORD"]
     # Id the chunks in kwic1
     M <- nrow(kwicQ)
     if (M > chunksize) {
-      chunksize <- chunksize 
+      chunksize <- chunksize
     } else {
       chunksize <- M
     }
-    kwicQ[, iter:= rep(1:M, each = chunksize, length.out = M)]
+    kwicQ[, iter := rep(1:M, each = chunksize, length.out = M)]
     setcolorder(kwicQ, neworder = c("PRIM_ID", "KEYWORD", "IDKW", "iter"))
     setDF(kwicQ)
   }
-    
   if (method == "a") {
     kwicS <- kwicQ
     #N <- M
   } else {
-    kwicS <-as.data.table(kwic2)
+    kwicS <- as.data.table(kwic2)
     rm(kwic2)
-    kwicS[, PRIM_ID := gsub('([[:space:]])\\1*', '', PRIM_ID)]
+    kwicS[, PRIM_ID := gsub("([[:space:]])\\1*", "", PRIM_ID)]
     kwicS[, PRIM_ID := paste("[K2]", PRIM_ID, sep = "")]
-    kwicS[, IDKW:= paste(PRIM_ID, KEYWORD, sep=":")]
+    kwicS[, IDKW := paste(PRIM_ID, KEYWORD, sep = ":")]
     if (method == "b") {
-      kwicS <- kwicS[, list(PRIM_ID = paste0(setdiff(sort(unique(unlist(strsplit(get("PRIM_ID"), split=", ")))), ""), collapse=", "),
-                            IDKW = paste0(setdiff(sort(unique(unlist(strsplit(get("IDKW"), split=", ")))), ""), collapse=", ")), by = "KEYWORD"]
+      kwicS <- kwicS[, list(PRIM_ID = paste0(setdiff(sort(unique(unlist(strsplit(get("PRIM_ID"),
+                                                                                 split = ", ")))), ""), collapse = ", "),
+                            IDKW = paste0(setdiff(sort(unique(unlist(strsplit(get("IDKW"),
+                                                                              split = ", ")))), ""), collapse = ", ")),
+                     by = "KEYWORD"]
     }
     N <- nrow(kwicS)
     #kwicS[, iter:= rep(1:M, each = chunksize, length.out = N)]
     setcolorder(kwicS, neworder = c("PRIM_ID", "KEYWORD", "IDKW"))
     setDF(kwicS)
-    
     if (method == "c") {
       kwicQ <- as.data.table(rbind(kwicQ, kwicS))
-      kwicQ <- kwicQ[, list(PRIM_ID = paste0(setdiff(sort(unique(unlist(strsplit(get("PRIM_ID"), split=", ")))), ""), collapse=", "),
-                            IDKW = paste0(setdiff(sort(unique(unlist(strsplit(get("IDKW"), split=", ")))), ""), collapse=", ")), by = "KEYWORD"]
+      kwicQ <- kwicQ[, list(PRIM_ID = paste0(setdiff(sort(unique(unlist(strsplit(get("PRIM_ID"),
+                                                                                 split= ", ")))), ""), collapse = ", "),
+                            IDKW = paste0(setdiff(sort(unique(unlist(strsplit(get("IDKW"),
+                                                                              split = ", ")))), ""), collapse = ", ")), by = "KEYWORD"]
       M <- nrow(kwicQ)
       if (M > chunksize) {
-        chunksize <- chunksize 
+        chunksize <- chunksize
       } else {
         chunksize <- M
       }
-      kwicQ[, iter:= rep(1:M, each = chunksize, length.out = M)]
+      kwicQ[, iter := rep(1:M, each = chunksize, length.out = M)]
       setcolorder(kwicQ, neworder = c("PRIM_ID", "KEYWORD", "IDKW", "iter"))
       kwicS <- kwicQ
       setDF(kwicQ)
@@ -437,7 +440,6 @@ ProbDup <- function (kwic1, kwic2 = NULL, method = c("a", "b", "c"),
                          max.dist = max.dist, force.exact = force.exact,
                          max.alpha = max.alpha, max.digit = max.digit)
   }
-  
   # Phonetic Matching
   ###################################################################
   if (phonetic) {
@@ -450,10 +452,9 @@ ProbDup <- function (kwic1, kwic2 = NULL, method = c("a", "b", "c"),
     }
     out[[2]] <- PhoneticDup(kwic1 = kwicQ, kwic2 = kwicS,
                             method = method, useBytes = useBytes,
-                            encoding = encoding, 
+                            encoding = encoding,
                             phon.min.alpha = phon.min.alpha, min.enc = min.enc)
   }
-  
   # Semantic Matching
   ###################################################################
   if (semantic) {
@@ -462,7 +463,6 @@ ProbDup <- function (kwic1, kwic2 = NULL, method = c("a", "b", "c"),
                             useBytes = useBytes)
   }
   class(out) <- "ProbDup"
-  
   # Convert to null if no sets of a type are retrieved
   for (i in 1:3) {
     if (is.null(out[[i]])) {
@@ -473,13 +473,11 @@ ProbDup <- function (kwic1, kwic2 = NULL, method = c("a", "b", "c"),
       }
     }
   }
-  
   return(out)
 }
 
 FuzzyDup <- function(kwic1, kwic2, max.dist, useBytes,
-                     force.exact, max.alpha, max.digit, method)
-{
+                     force.exact, max.alpha, max.digit, method) {
   kwic1 <- as.data.table(kwic1)
   kwic2 <- as.data.table(kwic2)
   M <- nrow(kwic1)
@@ -487,31 +485,43 @@ FuzzyDup <- function(kwic1, kwic2, max.dist, useBytes,
   # Identify strings to be exactly matched
   ind_exactQ <- logical(length = M)
   if (force.exact) {
-    cond1 <- grepl("[[:digit:]]", kwic1$KEYWORD, ignore.case = TRUE) == TRUE & stri_count_regex(kwic1$KEYWORD, "[[:digit:]]") <= max.digit
-    cond2 <- grepl("[[:alpha:]]", kwic1$KEYWORD, ignore.case = TRUE) == TRUE & stri_count_regex(kwic1$KEYWORD, "[[:alpha:]]") <= max.alpha
+    cond1 <- grepl("[[:digit:]]", kwic1$KEYWORD,
+                   ignore.case = TRUE) == TRUE & stri_count_regex(kwic1$KEYWORD,
+                                                                  "[[:digit:]]") <= max.digit
+    cond2 <- grepl("[[:alpha:]]", kwic1$KEYWORD,
+                   ignore.case = TRUE) == TRUE & stri_count_regex(kwic1$KEYWORD,
+                                                                  "[[:alpha:]]") <= max.alpha
     ind_exactQ <- cond1 | cond2
     rm(cond1, cond2)
   }
   ind_exactS <- logical(length = N)
   if (force.exact) {
-    cond1 <- grepl("[[:digit:]]", kwic2$KEYWORD, ignore.case = TRUE) == TRUE & stri_count_regex(kwic2$KEYWORD, "[[:digit:]]") <= max.digit
-    cond2 <- grepl("[[:alpha:]]", kwic2$KEYWORD, ignore.case = TRUE) == TRUE & stri_count_regex(kwic2$KEYWORD, "[[:alpha:]]") <= max.alpha
+    cond1 <- grepl("[[:digit:]]", kwic2$KEYWORD,
+                   ignore.case = TRUE) == TRUE & stri_count_regex(kwic2$KEYWORD,
+                                                                  "[[:digit:]]") <= max.digit
+    cond2 <- grepl("[[:alpha:]]", kwic2$KEYWORD,
+                   ignore.case = TRUE) == TRUE & stri_count_regex(kwic2$KEYWORD,
+                                                                  "[[:alpha:]]") <= max.alpha
     ind_exactS <- cond1 | cond2
     rm(cond1, cond2)
   }
-  
   # Identify strings with mixed characters(alpha + digit)
   ind_mixedQ <- logical(length = M)
-  cond1 <- grepl("[[:digit:]]", kwic1$KEYWORD, ignore.case = TRUE) == TRUE & grepl("[[:alpha:]]", kwic1$KEYWORD, ignore.case=TRUE) == TRUE
+  cond1 <- grepl("[[:digit:]]", kwic1$KEYWORD,
+                 ignore.case = TRUE) == TRUE & grepl("[[:alpha:]]",
+                                                     kwic1$KEYWORD,
+                                                     ignore.case = TRUE) == TRUE
   cond2 <- stri_count_regex(kwic1$KEYWORD, "[[:alpha:]]") > max.alpha
   ind_mixedQ <- cond1 & cond2
   rm(cond1, cond2)
   ind_mixedS <- logical(length = N)
-  cond1 <- grepl("[[:digit:]]", kwic2$KEYWORD, ignore.case = TRUE) == TRUE & grepl("[[:alpha:]]", kwic2$KEYWORD, ignore.case=TRUE) == TRUE
+  cond1 <- grepl("[[:digit:]]", kwic2$KEYWORD,
+                 ignore.case = TRUE) == TRUE & grepl("[[:alpha:]]",
+                                                     kwic2$KEYWORD,
+                                                     ignore.case = TRUE) == TRUE
   cond2 <- stri_count_regex(kwic2$KEYWORD, "[[:alpha:]]") > max.alpha
   ind_mixedS <- cond1 & cond2
   rm(cond1, cond2)
-  
   # Prepare mixed string vectors
   mixed_alphaQ <- ifelse(ind_mixedQ == TRUE, kwic1$KEYWORD, "")
   mixed_digitQ <- mixed_alphaQ
@@ -525,86 +535,87 @@ FuzzyDup <- function(kwic1, kwic2, max.dist, useBytes,
                        x = mixed_alphaS)
   mixed_digitS <- gsub(pattern = "[[:alpha:]]", replacement = "",
                        x = mixed_digitS)
-  ind_mixed_digit_exact <- stri_count_regex(mixed_digitQ, "[[:digit:]]") <= max.digit
-  
+  ind_mixed_digit_exact <- stri_count_regex(mixed_digitQ,
+                                            "[[:digit:]]") <= max.digit
   # Create progress bar
   invisible(capture.output(pb <- txtProgressBar(min = 0, max = max(kwic1$iter),
                                                 style = 3)))
-  
-  message('Fuzzy matching')
-  for (i in unique(kwic1$iter))
-  {
+  message("Fuzzy matching")
+  for (i in unique(kwic1$iter)) {
     in_iter <- (kwic1$iter == i)
     # Compute the chunk stringdist matrices
     if (method == "b") {
       exact <- stringdistmatrix(a = kwic1$KEYWORD[in_iter & ind_exactQ],
-                                b = kwic2$KEYWORD[ind_exactS], method = "lv", useBytes = useBytes)
+                                b = kwic2$KEYWORD[ind_exactS],
+                                method = "lv", useBytes = useBytes)
       exact[exact != 0] <- Inf
     }
     fuzzy <- stringdistmatrix(a = kwic1$KEYWORD[in_iter & !ind_exactQ],
-                              b = kwic2$KEYWORD[!ind_exactS], method = "lv", useBytes = useBytes)
+                              b = kwic2$KEYWORD[!ind_exactS],
+                              method = "lv", useBytes = useBytes)
     fuzzy[fuzzy > max.dist] <- Inf
-    
-    mixed <- NULL    
+    mixed <- NULL
     if (sum(in_iter & ind_mixedQ) > 0) {
-      mixed_alpha_fuzzy <- stringdistmatrix(a = mixed_alphaQ[in_iter & ind_mixedQ], 
-                                            b = mixed_alphaS[ind_mixedS], method = "lv", useBytes = useBytes)
+      mixed_alpha_fuzzy <- stringdistmatrix(a = mixed_alphaQ[in_iter & ind_mixedQ],
+                                            b = mixed_alphaS[ind_mixedS],
+                                            method = "lv", useBytes = useBytes)
       mixed_alpha_fuzzy[mixed_alpha_fuzzy > max.dist] <- Inf
       mixed_digit_exact <- stringdistmatrix(a = mixed_digitQ[in_iter & ind_mixedQ & ind_mixed_digit_exact],
-                                            b = mixed_digitS[ind_mixedS], method = "lv", useBytes = useBytes)
+                                            b = mixed_digitS[ind_mixedS],
+                                            method = "lv", useBytes = useBytes)
       mixed_digit_exact[mixed_digit_exact != 0] <- Inf
       mixed_digit_fuzzy <- stringdistmatrix(a = mixed_digitQ[in_iter & ind_mixedQ &  !ind_mixed_digit_exact],
-                                            b = mixed_digitS[ind_mixedS], method = "lv", useBytes = useBytes)
+                                            b = mixed_digitS[ind_mixedS],
+                                            method = "lv", useBytes = useBytes)
       mixed_digit_fuzzy[mixed_digit_fuzzy > max.dist] <- Inf
-      if(sum(in_iter & ind_mixedQ) == 1) {
-        mixed_alpha_fuzzy <- t(mixed_alpha_fuzzy)
-      }
-      if(sum(in_iter & ind_mixedQ & ind_mixed_digit_exact) == 1) {
-        mixed_digit_exact <- t(mixed_digit_exact)
-      }
-      if(sum(in_iter & ind_mixedQ & !ind_mixed_digit_exact) == 1) {
-        mixed_digit_fuzzy <- t(mixed_digit_fuzzy)
-      }
+#       if(sum(in_iter & ind_mixedQ) == 1) {
+#         mixed_alpha_fuzzy <- t(mixed_alpha_fuzzy)
+#       }
+#       if(sum(in_iter & ind_mixedQ & ind_mixed_digit_exact) == 1) {
+#         mixed_digit_exact <- t(mixed_digit_exact)
+#       }
+#       if(sum(in_iter & ind_mixedQ & !ind_mixed_digit_exact) == 1) {
+#         mixed_digit_fuzzy <- t(mixed_digit_fuzzy)
+#       }
       mixed_digit_comb <- matrix(numeric(), nrow = dim(mixed_alpha_fuzzy)[1],
                                  ncol = dim(mixed_alpha_fuzzy)[2])
       rownames(mixed_digit_comb) <- which(in_iter & ind_mixedQ)
-      if(dim(mixed_digit_fuzzy)[1] != 0) {
+      if (dim(mixed_digit_fuzzy)[1] != 0) {
         mixed_digit_comb[which(in_iter & ind_mixedQ &  !ind_mixed_digit_exact) %in% rownames(mixed_digit_comb),] <- mixed_digit_fuzzy
       }
-      if(dim(mixed_digit_exact)[1] != 0) {
+      if (dim(mixed_digit_exact)[1] != 0) {
         mixed_digit_comb[which(in_iter & ind_mixedQ & ind_mixed_digit_exact) %in% rownames(mixed_digit_comb),] <- mixed_digit_exact
       }
       mixed <- mixed_alpha_fuzzy + mixed_digit_comb
-      rm(mixed_alpha_fuzzy, mixed_digit_exact, mixed_digit_fuzzy, mixed_digit_comb)
+      rm(mixed_alpha_fuzzy, mixed_digit_exact,
+         mixed_digit_fuzzy, mixed_digit_comb)
     }
-    
     # Checks
-    if (method == "b") {
-      if(sum(in_iter & ind_exactQ) == 1) {
-        exact <- t(exact)
-      }
-    }
-    if (sum(in_iter & !ind_exactQ) == 1) {
-      fuzzy <- t(fuzzy)
-    }
-    
+#     if (method == "b") {
+#       if(sum(in_iter & ind_exactQ) == 1) {
+#         exact <- t(exact)
+#       }
+#     }
+#     if (sum(in_iter & !ind_exactQ) == 1) {
+#       fuzzy <- t(fuzzy)
+#     }
     # Fetch duplicates to a new column
     if (method == "b") {
-      if(sum(in_iter & ind_exactQ ) > 0 & sum(ind_exactS) > 0) {
-        kwic1[in_iter & ind_exactQ, FuzzydupIDKW:= apply(exact, 1,
+      if (sum(in_iter & ind_exactQ ) > 0 & sum(ind_exactS) > 0) {
+        kwic1[in_iter & ind_exactQ, FuzzydupIDKW := apply(exact, 1,
                                                          function(x) paste(as.character(unlist(kwic2[ind_exactS]$IDKW[x == 0])),
-                                                                           collapse=", "))]
+                                                                           collapse = ", "))]
       }
     }
     if (sum(in_iter & !ind_exactQ) > 0 & sum(!ind_exactS) > 0) {
-      kwic1[in_iter & !ind_exactQ, FuzzydupIDKW:= apply(fuzzy, 1,
+      kwic1[in_iter & !ind_exactQ, FuzzydupIDKW := apply(fuzzy, 1,
                                                         function(x) paste(as.character(unlist(kwic2[!ind_exactS]$IDKW[x <= max.dist])),
-                                                                          collapse=", "))]
+                                                                          collapse = ", "))]
     }
     if (sum(in_iter & ind_mixedQ) > 0 & sum(ind_mixedS) > 0) {
-      kwic1[in_iter & ind_mixedQ, FuzzydupIDKW2:= apply(mixed, 1,
+      kwic1[in_iter & ind_mixedQ, FuzzydupIDKW2 := apply(mixed, 1,
                                                         function(x) paste(as.character(unlist(kwic2[ind_mixedS]$IDKW[x <= max.dist])),
-                                                                          collapse=", "))]
+                                                                          collapse = ", "))]
     }
   if (method == "b") {
     rm(exact)
@@ -613,10 +624,9 @@ FuzzyDup <- function(kwic1, kwic2, max.dist, useBytes,
     # update progress bar
     setTxtProgressBar(pb, i)
     cat("\rBlock", i, "/", max(kwic1$iter), "|")
-    
   }
   close(pb)
-  ind_exactQ2 <- stri_count_fixed(kwic1$PRIM_ID, ",") !=0 & ind_exactQ
+  ind_exactQ2 <- stri_count_fixed(kwic1$PRIM_ID, ",") != 0 & ind_exactQ
   rm(ind_exactQ, ind_mixedQ, ind_exactS, ind_mixedS,
      pb, mixed_digitS, mixed_alphaS, mixed_alphaQ, mixed_digitQ,
      ind_mixed_digit_exact, in_iter)
@@ -628,19 +638,21 @@ FuzzyDup <- function(kwic1, kwic2, max.dist, useBytes,
     kwic1[ind_exactQ2, FuzzydupIDKW := IDKW]
   }
   rm(ind_exactQ2)
-  if("FuzzydupIDKW2" %in% colnames(kwic1)) {
-    kwic1[, FuzzydupIDKW := toString(unique(c(strsplit(FuzzydupIDKW, split = ", ")[[1]],
-                                              strsplit(FuzzydupIDKW2, split = ", ")[[1]]))), by=IDKW]
+  if ("FuzzydupIDKW2" %in% colnames(kwic1)) {
+    kwic1[, FuzzydupIDKW := toString(unique(c(strsplit(FuzzydupIDKW,
+                                                       split = ", ")[[1]],
+                                              strsplit(FuzzydupIDKW2,
+                                                       split = ", ")[[1]]))),
+          by = IDKW]
     kwic1[, FuzzydupIDKW2 := NULL]
   }
-  kwic1[, FuzzydupID := gsub(':\\S+\\b', '', FuzzydupIDKW)]
+  kwic1[, FuzzydupID := gsub(":\\S+\\b", "", FuzzydupIDKW)]
   kwic1 <- dupsets(kwic1, "F", method = method)
   return(kwic1)
 }
 
 PhoneticDup <- function(kwic1, kwic2, encoding, useBytes,
-                        phon.min.alpha, min.enc, method)
-{
+                        phon.min.alpha, min.enc, method) {
   kwic1 <- as.data.table(kwic1)
   kwic2 <- as.data.table(kwic2)
   M <- nrow(kwic1)
@@ -655,67 +667,62 @@ PhoneticDup <- function(kwic1, kwic2, encoding, useBytes,
     DMS <- DoubleMetaphone(kwic2$KEYWORD)[[2]]
   }
   # Prepare keyword phonetic encodings
-  DMQ <- ifelse(stri_count_regex(kwic1$KEYWORD, "[[:alpha:]]") < phon.min.alpha, "", DMQ)
-  DMS <- ifelse(stri_count_regex(kwic2$KEYWORD, "[[:alpha:]]") < phon.min.alpha, "", DMS)
+  DMQ <- ifelse(stri_count_regex(kwic1$KEYWORD, "[[:alpha:]]") < phon.min.alpha,
+                "", DMQ)
+  DMS <- ifelse(stri_count_regex(kwic2$KEYWORD, "[[:alpha:]]") < phon.min.alpha,
+                "", DMS)
   DMQ <- ifelse(nchar(DMQ) < min.enc, "", DMQ)
   DMS <- ifelse(nchar(DMS) < min.enc, "", DMS)
-  
   # Identify strings with phonetic encodings
   ind_phon <- logical(length = M)
   ind_phon <- DMQ != ""
   ind_phonS <- logical(length = N)
   ind_phonS <- DMS != ""
-  
   # Identify strings with phonetic encodings having digits
-  ind_phon_digitQ <- grepl("[[:digit:]]", kwic1$KEYWORD, ignore.case=TRUE) == TRUE & ind_phon
-  ind_phon_digitS <- grepl("[[:digit:]]", kwic2$KEYWORD, ignore.case=TRUE) == TRUE & ind_phonS
-  
+  ind_phon_digitQ <- grepl("[[:digit:]]", kwic1$KEYWORD,
+                           ignore.case = TRUE) == TRUE & ind_phon
+  ind_phon_digitS <- grepl("[[:digit:]]", kwic2$KEYWORD,
+                           ignore.case = TRUE) == TRUE & ind_phonS
   # Prepared strings with phonetic encodings having digits
   phon_digitQ <- ifelse(ind_phon_digitQ == TRUE, kwic1$KEYWORD, "")
   phon_digitQ <- gsub(pattern = "[[:alpha:]]", replacement = "",
                       x = phon_digitQ)
-  
   phon_digitS <- ifelse(ind_phon_digitS == TRUE, kwic2$KEYWORD, "")
   phon_digitS <- gsub(pattern = "[[:alpha:]]", replacement = "",
                       x = phon_digitS)
-  
   # Create progress bar
   invisible(capture.output(pb <- txtProgressBar(min = 0, max = max(kwic1$iter),
                                                 style = 3)))
-  
-  message('Phonetic matching')
-  for (i in unique(kwic1$iter))
-  {
+  message("Phonetic matching")
+  for (i in unique(kwic1$iter)) {
     in_iter <- (kwic1$iter == i)
     # Create distance matrix
     phon_dist <- stringdistmatrix(a = DMQ[in_iter & ind_phon],
-                                  b = DMS[ind_phonS], method="lv", useBytes = useBytes)
+                                  b = DMS[ind_phonS],
+                                  method = "lv", useBytes = useBytes)
     phon_dist[phon_dist != 0] <- Inf
-    
     # Checks
-    if(sum(in_iter & ind_phon) == 1) {
-      phon_dist <- t(phon_dist)
-    }
-    
-    if(sum(in_iter & ind_phon_digitQ) > 0) {
+#     if(sum(in_iter & ind_phon) == 1) {
+#       phon_dist <- t(phon_dist)
+#     }
+    if (sum(in_iter & ind_phon_digitQ) > 0) {
       phon_digit_exact <- stringdistmatrix(a = phon_digitQ[in_iter & ind_phon_digitQ],
-                                           b = phon_digitS[ind_phon_digitS], method="lv", useBytes = useBytes)
-      if(dim(phon_digit_exact)[2] == 1) {
-        phon_digit_exact <- t(phon_digit_exact)
-      }
+                                           b = phon_digitS[ind_phon_digitS],
+                                           method = "lv", useBytes = useBytes)
+#       if(dim(phon_digit_exact)[2] == 1) {
+#         phon_digit_exact <- t(phon_digit_exact)
+#       }
       phon_digit_exact[phon_digit_exact != 0] <- Inf
-      
       phon_dist_tr1 <-  which(which(in_iter & ind_phon) %in% which(in_iter & ind_phon_digitQ))
       phon_dist_tr2 <- which(which(ind_phonS) %in% which(ind_phon_digitS))
       phon_dist[phon_dist_tr1,phon_dist_tr2] <- phon_dist[phon_dist_tr1,phon_dist_tr2] + phon_digit_exact
       rm(phon_digit_exact)
     }
-    
     # Fetch duplicates to a new column
-    if(sum(in_iter & ind_phon) > 0 & sum(ind_phonS) > 0) {
-      kwic1[in_iter & ind_phon, PhoneticdupIDKW:= apply(phon_dist, 1,
+    if (sum(in_iter & ind_phon) > 0 & sum(ind_phonS) > 0) {
+      kwic1[in_iter & ind_phon, PhoneticdupIDKW := apply(phon_dist, 1,
                                                         function(x) paste(as.character(unlist(kwic2[ind_phonS]$IDKW[x == 0])),
-                                                                          collapse=", "))]
+                                                                          collapse = ", "))]
     }
     rm(phon_dist,in_iter)
     # update progress bar
@@ -727,48 +734,44 @@ PhoneticDup <- function(kwic1, kwic2, encoding, useBytes,
   for (j in c("IDKW", "PhoneticdupIDKW")) {
     set(kwic1,which(is.na(kwic1[[j]])),j,"")
   }
-  kwic1[, PhoneticdupID := gsub(':\\S+\\b', '', PhoneticdupIDKW)]
+  kwic1[, PhoneticdupID := gsub(":\\S+\\b", "", PhoneticdupIDKW)]
   kwic1 <- dupsets(kwic1, "P", method = method)
   return(kwic1)
 }
 
-SemanticDup <- function (kwic1, kwic2, syn, useBytes, method) {
+SemanticDup <- function(kwic1, kwic2, syn, useBytes, method) {
   kwic1 <- as.data.table(kwic1)
   kwic2 <- as.data.table(kwic2)
   M <- nrow(kwic1)
   N <- nrow(kwic2)
-  
   # Identify keyword strings associated with synsets
   SMQ <- as.character(with(stack(syn), ind[match(kwic1$KEYWORD, values)]))
   SMS <- as.character(with(stack(syn), ind[match(kwic2$KEYWORD, values)]))
-  
   SMQ[is.na(SMQ)]   <- ""
   SMS[is.na(SMS)]   <- ""
-
   # Identify strings for semantic matching
   ind_sem <- SMQ != ""
   ind_semS <- SMS != ""
-  
   # Create progress bar
   invisible(capture.output(pb <- txtProgressBar(min = 0, max = max(kwic1$iter),
                                                 style = 3)))
-  
-  message('Semantic matching')
+  message("Semantic matching")
   for (i in unique(kwic1$iter)) {
     in_iter <- (kwic1$iter == i)
     # Create distance matrix
     sem_dist <- stringdistmatrix(a = SMQ[in_iter & ind_sem],
-                                 b = SMS[ind_semS], method = "lv", useBytes = useBytes)
+                                 b = SMS[ind_semS],
+                                 method = "lv", useBytes = useBytes)
     sem_dist[sem_dist != 0] <- Inf
     # Checks
-    if (sum(in_iter & ind_sem) == 1) {
-      sem_dist <- t(sem_dist)
-    }
+#     if (sum(in_iter & ind_sem) == 1) {
+#       sem_dist <- t(sem_dist)
+#     }
     # Fetch duplicates to a new column
     if (sum(in_iter & ind_sem) > 0 & sum(ind_semS) > 0) {
-      kwic1[in_iter & ind_sem, SemanticdupIDKW:= apply(sem_dist, 1,
+      kwic1[in_iter & ind_sem, SemanticdupIDKW := apply(sem_dist, 1,
                                                         function(x) paste(as.character(unlist(kwic2[ind_semS]$IDKW[x == 0])),
-                                                                          collapse=", "))]
+                                                                          collapse = ", "))]
     }
     rm(sem_dist,in_iter)
     # update progress bar
@@ -780,10 +783,11 @@ SemanticDup <- function (kwic1, kwic2, syn, useBytes, method) {
   for (j in c("IDKW", "SemanticdupIDKW")) {
     set(kwic1,which(is.na(kwic1[[j]])),j,"")
   }
-  kwic1[, SemanticdupID := gsub(':\\S+\\b', '', SemanticdupIDKW)]
+  kwic1[, SemanticdupID := gsub(":\\S+\\b", "", SemanticdupIDKW)]
   kwic1 <- dupsets(kwic1, "S", method = method)
   # Remove synsets with single/unique members
-  kwic1 <- kwic1[!unlist(lapply(strsplit( gsub('*?\\[\\S+:', '', kwic1$IDKW), split = ", "), function(x) length(unique(x)))) == 1,]
+  kwic1 <- kwic1[!unlist(lapply(strsplit( gsub("*?\\[\\S+:", "", kwic1$IDKW),
+                                          split = ", "), function(x) length(unique(x)))) == 1,]
   return(kwic1)
 }
 
@@ -793,8 +797,10 @@ dupsets <- function(kwicout, type, method) {
     setkey(kwicout, PRIM_ID)
     kwicout[, c("iter", "KEYWORD") := NULL]
     if (method == "b") {
-      kwicout[,  3 := paste(get(names(kwicout)[2]), get(names(kwicout)[3]), sep = ", "), with = FALSE]
-      kwicout[,  4 := paste(get(names(kwicout)[1]), get(names(kwicout)[4]), sep = ", "), with = FALSE]
+      kwicout[,  3 := paste(get(names(kwicout)[2]),
+                            get(names(kwicout)[3]), sep = ", "), with = FALSE]
+      kwicout[,  4 := paste(get(names(kwicout)[1]),
+                            get(names(kwicout)[4]), sep = ", "), with = FALSE]
     }
     kwicout[, IDKW := NULL]
     if (method != "b") {
@@ -803,13 +809,16 @@ dupsets <- function(kwicout, type, method) {
       kwicout[, Ndup := NULL]
     }
     # Merge by PRIM_ID, then by ID, then add TYPE
-    kwicout <- kwicout[, list(ID = paste0(setdiff(sort(unique(unlist(strsplit(get(names(kwicout)[3]), split=", ")))), ""), collapse=", "),
-                              IDKW = paste0(setdiff(sort(unique(unlist(strsplit(get(names(kwicout)[2]), split=", ")))), ""), collapse=", ")),
-                       by = "PRIM_ID"][, list(IDKW = paste0(sort(unique(unlist(strsplit(IDKW, split=", ")))), collapse=", "),
+    kwicout <- kwicout[, list(ID = paste0(setdiff(sort(unique(unlist(strsplit(get(names(kwicout)[3]), split = ", ")))), ""),
+                                          collapse = ", "),
+                              IDKW = paste0(setdiff(sort(unique(unlist(strsplit(get(names(kwicout)[2]), split = ", ")))), ""),
+                                            collapse = ", ")),
+                       by = "PRIM_ID"][, list(IDKW = paste0(sort(unique(unlist(strsplit(IDKW, split = ", ")))),
+                                                            collapse = ", "),
                                                      TYPE = type), by = "ID"]
     setkey(kwicout, NULL)
     kwicout <- unique(kwicout)
-    # Add SET_NO  
+    # Add SET_NO
     setkey(kwicout, "ID")
     kwicout[, SET_NO := as.factor(ID)]
     kwicout[, SET_NO := as.numeric(SET_NO)]
@@ -822,24 +831,24 @@ dupsets <- function(kwicout, type, method) {
     setkey(kwicout, "SET_NO")
     setDF(kwicout)
     return(kwicout)
-  }  
+  }
 }
 
 
 fix.syn <- function(syn) {
   names(syn) <- NULL
-  names(syn) <- paste0('SM', seq_along(syn))
+  names(syn) <- paste0("SM", seq_along(syn))
   syn <- lapply(syn, sort)
   syn <- subset(syn, duplicated(syn) == FALSE)
   if (is.element(TRUE, sapply(syn, function(x) length(x) == 1))) {
     syn <- syn[!sapply(syn, function(x) length(x) == 1)]
-    warning('synsets encountered in list "syn" with length 1')
+    warning("synsets encountered in list 'syn' with length 1")
   }
   syncomb <- do.call("rbind",lapply(syn, embed, 2))
   gg <- graph.edgelist(syncomb, directed = F)
   x <- split(V(gg)$name, clusters(gg)$membership)
   x <- lapply(x, sort)
   x <- subset(x, duplicated(x) == FALSE)
-  names(x) <- paste0('SM', seq_along(x))
+  names(x) <- paste0("SM", seq_along(x))
   return(x)
 }

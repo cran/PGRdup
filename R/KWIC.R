@@ -88,19 +88,18 @@
 #' @export KWIC
 #' @export print.KWIC
 #' @rdname KWIC
-KWIC <- function (x, fields, min.freq = 10)
-{
+KWIC <- function(x, fields, min.freq = 10) {
   if (is.data.frame(x) == FALSE) {
     # Check if x is a data.frame and stop if not
-    stop('x is not a data.frame')
+    stop("x is not a data.frame")
   }
   if (is.vector(fields) == FALSE) {
     # Check if fields is a vector or not
-    stop('fields is not a vector')
+    stop("fields is not a vector")
   }
   if (length(fields) == 1) {
     # Check if more than one field is given as input and stop if not
-    stop('Only one field given as input')
+    stop("Only one field given as input")
   }
   if (is.element(FALSE, fields %in% colnames(x)) == TRUE) {
     # Check if fields are present in x and stop if not
@@ -113,9 +112,10 @@ KWIC <- function (x, fields, min.freq = 10)
   # Convert NAs to empty strings
   for (j in fields) set(x , which(is.na(x[[j]])), j, "")
   setDF(x)
-  if (is.element("", x[fields[1]]) | is.element(TRUE, duplicated(x[fields[1]]))) {
+  if (is.element("", x[fields[1]]) | is.element(TRUE,
+                                                duplicated(x[fields[1]]))) {
     # Check primary key/ID is unique and not NULL
-    stop('Primary key/ID field should be unique and not NULL\n Use PGRdup::ValidatePrimKey() to identify and rectify the aberrant records first')
+    stop("Primary key/ID field should be unique and not NULL\n Use PGRdup::ValidatePrimKey() to identify and rectify the aberrant records first")
   }
   #setDT(x)
   x <- as.data.table(x)
@@ -124,10 +124,10 @@ KWIC <- function (x, fields, min.freq = 10)
   x[, COMBINED := do.call(paste, .SD), .SDcols = fields]
   # Create KWIC index using data.table
   K <-  as.list(rep(NA, length(fields)))
-  for (i in 1:(length(fields))){
-    K[[i]] <-  x[, list(KEYWORD = unlist(strsplit(get(fields[i]), " ")), 
-                        FIELD = fields[i]), 
-                 by = list(PRIM_ID=get(fields[1]), KWIC)]
+  for (i in 1:(length(fields))) {
+    K[[i]] <-  x[, list(KEYWORD = unlist(strsplit(get(fields[i]), " ")),
+                        FIELD = fields[i]),
+                 by = list(PRIM_ID = get(fields[1]), KWIC)]
     K[[i]] <- K[[i]][!is.na(K[[i]]$KEYWORD),]
   }
   KWIC <- rbindlist(K)
@@ -149,18 +149,18 @@ KWIC <- function (x, fields, min.freq = 10)
   KWIC[, KEYWORD := gsub(pattern = "([.|()\\^{}+$*?]|\\[|\\])",
                          replacement = "\\\\\\1", x = KEYWORD)]
   # Highlight keywords in KWIC
-  KWIC[, KWIC := mapply(gsub, pattern=paste0(' ', KEYWORD, ' '), 
-                        replacement=paste0(' <<', KEYWORD, '>> '), KWIC)]
+  KWIC[, KWIC := mapply(gsub, pattern = paste0(" ", KEYWORD, " "),
+                        replacement = paste0(" <<", KEYWORD, ">> "), KWIC)]
   KWIC[, KWIC := gsub("^\\s+|\\s+$", "", KWIC)]
   # Unescape all Regex special characters
   KWIC[, KEYWORD := gsub(pattern = "\\\\(.)", replacement = "\\1", x = KEYWORD)]
   # Split KWIC
-  KWIC[, c('KWIC_L', 'KW1'):= do.call(rbind.data.frame,
-                                 stri_split_fixed(KWIC, '<<', 2))][]
-  KWIC[, c('KWIC_KW', 'KWIC_R'):= do.call(rbind.data.frame,
-                                stri_split_fixed(KW1, '>>', 2))][]
-  cols <- c('KWIC_L', 'KWIC_KW', 'KWIC_R')
-  KWIC[, (cols):= lapply(.SD, as.character), .SDcols = cols]
+  KWIC[, c("KWIC_L", "KW1") := do.call(rbind.data.frame,
+                                 stri_split_fixed(KWIC, "<<", 2))][]
+  KWIC[, c("KWIC_KW", "KWIC_R") := do.call(rbind.data.frame,
+                                stri_split_fixed(KW1, ">>", 2))][]
+  cols <- c("KWIC_L", "KWIC_KW", "KWIC_R")
+  KWIC[, (cols) := lapply(.SD, as.character), .SDcols = cols]
   KWIC[, KW1 := NULL]
   # Clean output data.frame
   KWIC <- setkey(KWIC, FIELD)
@@ -173,7 +173,7 @@ KWIC <- function (x, fields, min.freq = 10)
   # Get keyword freq
   kwf <- as.data.frame(table(KWIC$KEYWORD))
   kwf <- subset(kwf, Freq > min.freq)
-  kwf <- kwf[order(-kwf$Freq), ] 
+  kwf <- kwf[order(-kwf$Freq), ]
   rownames(kwf) <- NULL
   setnames(kwf, old = "Var1", new = "Keyword")
   KWICIndex[[2]] <- kwf

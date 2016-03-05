@@ -13,10 +13,10 @@ This package primarily implements a workflow designed to fetch groups or sets of
 
 The functions in this package are primarily built using the following R packages:
 
--   [`data.table`](http://cran.r-project.org/web/packages/data.table/index.html)
--   [`igraph`](http://cran.r-project.org/web/packages/igraph/index.html)
--   [`stringdist`](http://cran.r-project.org/web/packages/stringdist/index.html)
--   [`stringi`](http://cran.r-project.org/web/packages/stringi/index.html)
+-   [`data.table`](https://cran.r-project.org/package=data.table)
+-   [`igraph`](https://cran.r-project.org/package=igraph)
+-   [`stringdist`](https://cran.r-project.org/package=stringdist)
+-   [`stringi`](https://cran.r-project.org/package=stringi)
 
 Installation
 ------------
@@ -79,9 +79,19 @@ Inspect, revise and improve the retrieved sets using these functions. If conside
 -   `AddProbDup`
 -   `SplitProbDup`
 -   `MergeProbDup`
+-   `ViewProbDup`
 -   `KWCounts`
+-   `read.genesys`
 
-Use these helper functions if needed. `ValidatePrimKey` can be used to check whether a column chosen in a data.frame as the primary primary key/ID confirms to the constraints of absence of duplicates and NULL values. `DoubleMetaphone` is an implementation of the Double Metaphone phonetic algorithm in `R` and is used for phonetic matching. `ParseProbDup` and `AddProbDup` work with objects of class `ProbDup`. The former can be used to parse the probable duplicate sets in a `ProbDup` object to a `data.frame` while the latter can be used to add these sets data fields to the passport databases. `SplitProbDup` can be used to split an object of class `ProbDup` according to set counts. `MergeProbDup` can be used to merge together two objects of class `ProbDup`. `KWCounts` canb used to compute keyword counts from PGR passport database fields(columns), which can give a rough indication of the completeness of the data.
+Use these helper functions if needed. `ValidatePrimKey` can be used to check whether a column chosen in a data.frame as the primary primary key/ID confirms to the constraints of absence of duplicates and NULL values.
+
+`DoubleMetaphone` is an implementation of the Double Metaphone phonetic algorithm in `R` and is used for phonetic matching.
+
+`ParseProbDup` and `AddProbDup` work with objects of class `ProbDup`. The former can be used to parse the probable duplicate sets in a `ProbDup` object to a `data.frame` while the latter can be used to add these sets data fields to the passport databases. `SplitProbDup` can be used to split an object of class `ProbDup` according to set counts. `MergeProbDup` can be used to merge together two objects of class `ProbDup`. `ViewProbDup` can be used to plot the summary visualizations of probable duplicate sets retrieved in an object of class `ProbDup`.
+
+`KWCounts` can be used to compute keyword counts from PGR passport database fields(columns), which can give a rough indication of the completeness of the data.
+
+`read.genesys` can be used to import PGR data in a Darwin Core - germplasm zip archive downloaded from genesys database into the R environment.
 
 Tips
 ----
@@ -106,13 +116,13 @@ citation('PGRdup')
     #> 
     #>   Aravind, J., J. Radhamani, Kalyani Srinivasan, B. Ananda
     #>   Subhash, and R. K. Tyagi ().  PGRdup: Discover Probable
-    #>   Duplicates in Plant Genetic Resources (PGR) Collections. R
-    #>   package version 0.2.1.
+    #>   Duplicates in Plant Genetic Resources Collections. R package
+    #>   version 0.2.2.
     #> 
     #> A BibTeX entry for LaTeX users is
     #> 
     #>   @Manual{,
     #>     title = {PGRdup: Discover Probable Duplicates in Plant Genetic Resources Collections},
     #>     author = {{Aravind J} and {Radhamani J} and {Kalyani Srinivasan} and {Ananda Subhash B} and Rishi Kumar Tyagi},
-    #>     note = {R package version 0.2.1},
+    #>     note = {R package version 0.2.2},
     #>   }

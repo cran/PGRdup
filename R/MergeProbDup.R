@@ -83,12 +83,10 @@ MergeProbDup <- function(pdup1, pdup2) {
   if (!is(pdup2, "ProbDup")) {
     stop('"pdup2" is not of class ProbDup')
   }
-  if(!identical(attributes(pdup1), attributes(pdup2))) {
+  if (!identical(attributes(pdup1), attributes(pdup2))) {
     stop('Attributes of "pdup1" and "pdup2" are not identical')
   }
-  
   N <- length(seq_along(pdup1))
-  
   outnames <- attributes(pdup1)$names
   out <- vector("list", length(outnames))
   names(out) <- outnames
@@ -98,12 +96,13 @@ MergeProbDup <- function(pdup1, pdup2) {
   class(out) <- class(pdup1)
   pdup1 <- lapply(pdup1, as.data.table)
   pdup2 <- lapply(pdup2, as.data.table)
-  
   for (i in 1:N) {
     out[[i]] <- rbind.data.frame(pdup1[[i]], pdup2[[i]])
-    out[[i]] <- unique(out[[i]], by=c("TYPE", "ID", "IDKW", "COUNT"))
+    out[[i]] <- unique(out[[i]], by = c("TYPE", "ID", "IDKW", "COUNT"))
     out[[i]] <- setDF(out[[i]])
-    if(dim(out[[i]])[1] == 0) {out[i] <- list(NULL)}
+    if (dim(out[[i]])[1] == 0) {
+      out[i] <- list(NULL)
     }
+  }
   return(out)
 }

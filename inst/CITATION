@@ -23,5 +23,5 @@ citEntry(entry  = "Manual",
          
          textVersion = paste(
            "Aravind, J., J. Radhamani, Kalyani Srinivasan, B. Ananda Subhash, and R. K. Tyagi (",
-           year, ").  PGRdup: Discover Probable Duplicates in Plant Genetic Resources (PGR) Collections. ",
+           year, ").  PGRdup: Discover Probable Duplicates in Plant Genetic Resources Collections. ",
            vers, ".", sep=""))

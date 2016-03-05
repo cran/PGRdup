@@ -54,24 +54,20 @@
 #' DoubleMetaphone(str3) }
 #' @export
 #' @useDynLib PGRdup fdouble_metaphone
-DoubleMetaphone <- function(str) 
-{
+DoubleMetaphone <- function(str) {
   if (is.character(str) == FALSE) {
     # Check if str is a character vector and stop if not
-    stop('str is not a character vector')
+    stop("str is not a character vector")
   }
-  if (any(grepl("NON_ASCII", 
-                iconv(str, "latin1", "ASCII", sub="NON_ASCII"))) == TRUE) {
-    str <- iconv(str,to="ASCII//TRANSLIT")
-    warning('Non-ASCII characters were encountered.')
+  if (any(grepl("NON_ASCII",
+                iconv(str, "latin1", "ASCII", sub = "NON_ASCII"))) == TRUE) {
+    str <- iconv(str,to = "ASCII//TRANSLIT")
+    warning("Non-ASCII characters were encountered.")
   }
-  out <- .C("fdouble_metaphone", as.character(str), 
+  out <- .C("fdouble_metaphone", as.character(str),
             primary = character(length(str)),
             alternate = character(length(str)),
             len = length(str), PACKAGE = "PGRdup")
-  
   out <- out[2:3]
   return(out)
 }
-
-

@@ -85,7 +85,7 @@
 #' @import data.table
 #' @importFrom methods is
 #' @export
-ParseProbDup <- function (pdup, max.count = 30, 
+ParseProbDup <- function(pdup, max.count = 30,
                           insert.blanks  = TRUE) {
   if (!is(pdup, "ProbDup")) {
     stop('"pdup" is not of class ProbDup')
@@ -100,29 +100,33 @@ ParseProbDup <- function (pdup, max.count = 30,
       pdup[[i]] <- subset(pdup[[i]], COUNT <= max.count)
       pdup[[i]] <- unique(pdup[[i]])
       # Reset SET_NO to take into account deleted sets with coutn > max.count
-      pdup[[i]][, Seq:=1:.N]
+      pdup[[i]][, Seq := 1:.N]
       # Cast ID and IDKW by SET_NO
-      pdup[[i]] <- pdup[[i]][, .(unlist(strsplit(IDKW, ", ", TRUE))), by = list(SET_NO, TYPE, COUNT)][,
-                               .(IDKW = toString(V1)), .(SET_NO, TYPE, COUNT, PRIM_ID = gsub(":.*", "", V1))]
+      pdup[[i]] <- pdup[[i]][, .(unlist(strsplit(IDKW, ", ", TRUE))),
+                             by = list(SET_NO, TYPE, COUNT)][,
+                               .(IDKW = toString(V1)), .(SET_NO, TYPE, COUNT,
+                                                         PRIM_ID = gsub(":.*",
+                                                                        "",
+                                                                        V1))]
     }
   }
   # rbind pdup list
   pdup <- rbindlist(pdup)
   # Split K* from PRIM_ID column
-  pdup[,PRIM_ID:= gsub("\\]", "\\]_", PRIM_ID, perl = TRUE)]
-  pdup[,K:= gsub("_.*", "", PRIM_ID, perl = TRUE)]
-  pdup[,PRIM_ID:= gsub("\\[K1\\]_", "", PRIM_ID, perl = TRUE)]
-  pdup[,PRIM_ID:= gsub("\\[K2\\]_", "", PRIM_ID, perl = TRUE)]
+  pdup[,PRIM_ID := gsub("\\]", "\\]_", PRIM_ID, perl = TRUE)]
+  pdup[,K := gsub("_.*", "", PRIM_ID, perl = TRUE)]
+  pdup[,PRIM_ID := gsub("\\[K1\\]_", "", PRIM_ID, perl = TRUE)]
+  pdup[,PRIM_ID := gsub("\\[K2\\]_", "", PRIM_ID, perl = TRUE)]
   # Reset column order
   nameslist <- c("SET_NO", "TYPE", "K", "PRIM_ID", "IDKW", "COUNT")
-  setcolorder(x=pdup, neworder = nameslist)
+  setcolorder(x = pdup, neworder = nameslist)
   # Insert blanks
   setkey(pdup,NULL)
   if (insert.blanks  == TRUE) {
-    pdup[,TEMP:= as.factor(SET_NO)]
-    pdup[,TEMP:= interaction(pdup$TEMP, as.factor(pdup$TYPE), drop=TRUE)]
+    pdup[,TEMP := as.factor(SET_NO)]
+    pdup[,TEMP := interaction(pdup$TEMP, as.factor(pdup$TYPE), drop = TRUE)]
     setattr(pdup$TEMP,"levels", seq(from = 1, to = length(levels(pdup$TEMP))))
-    pdup[,TEMP:= as.numeric(TEMP)]
+    pdup[,TEMP := as.numeric(TEMP)]
     pdup <- setDT(pdup)[pdup[, c(.I, NA), TEMP]$V1][!.N]
     pdup[, TEMP := NULL]
     pdup[is.na(TYPE), TYPE := ""]

@@ -81,19 +81,19 @@
 
 #' @rdname MergeKW
 #' @export
-MergeKW <- function (x, y, delim = c("space", "dash", "period")) {
-  if(!is.character(x)){
-    warning('x is not of type character; coerced to character')
+MergeKW <- function(x, y, delim = c("space", "dash", "period")) {
+  if (!is.character(x)) {
+    warning("x is not of type character; coerced to character")
     x <- as.character(x)
   }
-  if(!is.list(y)){
-    stop('y is not a list')
+  if (!is.list(y)) {
+    stop("y is not a list")
   }
-  if(is.element(FALSE, as.logical(lapply(y, function(x) length(x) == 2)))) {
-    stop('list y is not in the appropriate format')
+  if (is.element(FALSE, as.logical(lapply(y, function(x) length(x) == 2)))) {
+    stop("list y is not in the appropriate format")
   }
-  if(is.element(FALSE, as.logical(lapply(y, function(x) is.character(x))))){
-    warning('list y had non character vectors; coerced to character')
+  if (is.element(FALSE, as.logical(lapply(y, function(x) is.character(x))))) {
+    warning("list y had non character vectors; coerced to character")
     y <-  as.logical(lapply(y, function(x) as.character(x)))
   }
   delim <- match.arg(delim, c("space", "dash", "period"), several.ok = TRUE)
@@ -114,25 +114,26 @@ MergeKW <- function (x, y, delim = c("space", "dash", "period")) {
   if (is.element("period", delim)) {
     options2[3] <- TRUE
   }
-  p <-  paste0(options[options2], collapse="")
+  p <-  paste0(options[options2], collapse = "")
   sapply(seq_len(length(y)), function(i){
     pat <- paste0("(?i)(?<=^", y[[i]][1], ")[", p, "]+(?=", y[[i]][2],
                   ")[[:digit:]]*\\b|\\b(?<=", y[[i]][1], ")[", p,
                   "]+(?=",  y[[i]][2], "[[:digit:]]*$)", collapse = "")
-    x <<- gsub(pat, "", x, perl = TRUE) }
+    x <<- gsub(pat, "", x, perl = TRUE)
+    }
   )
   return(x)
 }
 
 #' @rdname MergeKW
 #' @export
-MergePrefix <- function (x, y, delim = c("space", "dash", "period")) {
-  if(!is.character(x)){
-    warning('x is not of type character; coerced to character')
+MergePrefix <- function(x, y, delim = c("space", "dash", "period")) {
+  if (!is.character(x)) {
+    warning("x is not of type character; coerced to character")
     x <- as.character(x)
   }
-  if(!is.character(y)){
-    warning('x is not of type character; coerced to character')
+  if (!is.character(y)) {
+    warning("x is not of type character; coerced to character")
     y <- as.character(y)
   }
   delim <- match.arg(delim, c("space", "dash", "period"), several.ok = TRUE)
@@ -153,23 +154,24 @@ MergePrefix <- function (x, y, delim = c("space", "dash", "period")) {
   if (is.element("period", delim)) {
     options2[3] <- TRUE
   }
-  p <-  paste0(options[options2], collapse="")
+  p <-  paste0(options[options2], collapse = "")
   sapply(seq_len(length(y)), function(i){
     x <<- gsub(paste0("(?i)\\b(?<=^", y[i],
-                      ")[", p, "]+"), "", x, perl = TRUE) }
+                      ")[", p, "]+"), "", x, perl = TRUE)
+    }
   )
   return(x)
 }
 
 #' @rdname MergeKW
 #' @export
-MergeSuffix <- function (x, y, delim = c("space", "dash", "period")) {
-  if(!is.character(x)){
-    warning('x is not of type character; coerced to character')
+MergeSuffix <- function(x, y, delim = c("space", "dash", "period")) {
+  if (!is.character(x)) {
+    warning("x is not of type character; coerced to character")
     x <- as.character(x)
   }
-  if(!is.character(y)){
-    warning('x is not of type character; coerced to character')
+  if (!is.character(y)) {
+    warning("x is not of type character; coerced to character")
     y <- as.character(y)
   }
   delim <- match.arg(delim, c("space", "dash", "period"), several.ok = TRUE)
@@ -190,10 +192,11 @@ MergeSuffix <- function (x, y, delim = c("space", "dash", "period")) {
   if (is.element("period", delim)) {
     options2[3] <- TRUE
   }
-  p <-  paste0(options[options2], collapse="")
+  p <-  paste0(options[options2], collapse = "")
   sapply(seq_len(length(y)), function(i){
       x <<- gsub(paste0("(?i)[", p, "]+(?=", y[i], "[[:digit:]]*",
-                        "\\b)"), "", x, perl = TRUE) }
+                        "\\b)"), "", x, perl = TRUE)
+      }
     )
   return(x)
 }

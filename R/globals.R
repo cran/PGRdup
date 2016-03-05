@@ -18,10 +18,19 @@
 
 
 if (getRversion() >= "2.15.1")  {
-  utils::globalVariables(c("KEYWORD", "FIELD", "PRIM_ID", "Freq", "kwic",
-  "primdup", "fixed", "ID", "IDKW", "TYPE", "SET_NO", "ind", "V1", "COUNT",
-  "DEL", "SPLIT", "K1_PRIM_ID", "K2_PRIM_ID", "Seq", "K", "TEMP", "Ndup", ".",
-   "KW1", "COMBINED", "iter", "exep", "FuzzydupIDKW", "FuzzydupIDKW2",
-  "FuzzydupID", "PhoneticdupIDKW", "PhoneticdupID", "SemanticdupIDKW",
-  "SemanticdupID"))
+  utils::globalVariables(
+    c(
+      ".", "COMBINED", "COUNT", "DEL", "exep", "FACTOR",
+      "FIELD", "fixed", "Freq", "FuzzydupID",
+      "FuzzydupIDKW", "FuzzydupIDKW2", "genesysId", "ID",
+      "IDKW", "ind", "iter", "K", "K1_PRIM_ID",
+      "K2_PRIM_ID", "KEYWORD", "KIND", "KIND2", "KW1",
+      "kwic", "label", "name", "Ndup", "NO.ACC", "NO.SETS",
+      "PhoneticdupID", "PhoneticdupIDKW", "PRIM_ID",
+      "primdup", "SemanticdupID", "SemanticdupIDKW", "Seq",
+      "SET_NO", "shape", "shape2", "singles", "SPLIT",
+      "TEMP", "Total", "TYPE", "V1", "value",
+      "variable", "WITHIN", "ymax", "ymin"
+    )
+  )
 }

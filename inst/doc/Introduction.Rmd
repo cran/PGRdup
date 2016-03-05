@@ -164,6 +164,14 @@ If the passport data exists as an excel sheet, it can be first converted to a cs
 
 If the PGR passport data is in a DBMS, the required table can be imported as a data frame into `R`. using the appropriate [`R`-database interface package](http://www.burns-stat.com/r-database-interfaces/). For example [`dbConnect`](http://cran.r-project.org/web/packages/dbConnect/index.html) for MySQL, [`ROracle`](http://cran.r-project.org/web/packages/ROracle/index.html) for Oracle etc.
 
+The PGR data downloaded from [genesys](https://www.genesys-pgr.org/welcome) database as a [Darwin Core - Germplasm](https://github.com/dagendresen/darwincore-germplasm) zip archive can be imported into the `R` environment as a flat file `data.frame` using the `read.genesys` function.
+
+```{r, eval=FALSE}
+# Import the DwC-Germplasm zip archive "genesys-accessions-filtered.zip"
+PGRgenesys <- read.genesys("genesys-accessions-filtered.zip",
+                           scrub.names.space = TRUE, readme = TRUE)
+```
+
 ##Data Pre-processing
 Data pre-processing is a critical step which can affect the quality of the probable duplicate sets being retrieved. It involves data standardization as well as data cleaning which can be achieved using the functions `DataClean`, `MergeKW`, `MergePrefix` and `MergeSuffix`.
 
@@ -184,7 +192,7 @@ Similarly the logical argument `fix.bracket` can be used to replace all brackets
 ```{r}
 x <- c("(NRCG-1738)/(NFG649)", "26-5-1[NRCG-2528]", "Ah 1182 {NRCG-4340}")
 x
-# Replace paranthesis, square brackets and curly brackets with space
+# Replace parenthesis, square brackets and curly brackets with space
 DataClean(x, fix.comma=FALSE, fix.semcol=FALSE, fix.col=FALSE,
           fix.bracket=TRUE,
           fix.punct=FALSE, fix.space=FALSE, fix.sep=FALSE, fix.leadzero=FALSE)
@@ -247,8 +255,6 @@ DataClean(names)
 # DC <- data.frame(names = names, `DataClean(names)` = DataClean(names))
 # knitr::kable(DC)
 ```
-
-\pagebreak
 
 **Table 1.** Data pre-processing using `DataClean`.
 
@@ -382,8 +388,6 @@ if("diagram" %in% rownames(installed.packages())) {
 
 **Fig. 2.** Word cloud of keywords retrieved
 
-\pagebreak
-
 The function will throw an error in case of duplicates or NULL values in the primary key/ID field mentioned.
 ```{r}
 GN <- GN1000
@@ -455,7 +459,11 @@ GN[GNfields] <- lapply(GN[GNfields],
 
 # Generate the KWIC index
 GNKWIC <- KWIC(GN, GNfields)
+```
 
+\pagebreak
+
+```{r}
 # Specify the exceptions as a vector
 exep <- c("A", "B", "BIG", "BOLD", "BUNCH", "C", "COMPANY", "CULTURE",
          "DARK", "E", "EARLY", "EC", "ERECT", "EXOTIC", "FLESH", "GROUNDNUT",
@@ -471,23 +479,12 @@ class(GNdup)
 GNdup
 ```
 
-
-```{r, eval=FALSE}
-head(GNdup[[1]])
-```
-
-
 ```{r}
 # Fetch phonetic duplicates by method 'a'
 GNdup <- ProbDup(kwic1 = GNKWIC, method = "a", excep = exep, fuzzy = FALSE,
                  phonetic = TRUE, semantic = FALSE)
 class(GNdup)
 GNdup
-```
-
-
-```{r, eval=FALSE}
-head(GNdup[[2]])
 ```
 
 2. **Method `"b"`** : Performs string matching of keywords in the first KWIC index (query) with that of the keywords in the second index (source) to identify probable duplicates of accessions of the first PGR passport database among the accessions in the second database.
@@ -550,13 +547,6 @@ class(GNdupb)
 GNdupb
 ```
 
-
-```{r, eval=FALSE}
-head(GNdupb[[1]])
-head(GNdupb[[2]])
-```
-
-
 ```{r}
 # Fetch fuzzy and phonetic duplicate sets by method c
 GNdupc <- ProbDup(kwic1 = GN1KWIC, kwic2 = GN2KWIC, method = "c",
@@ -564,12 +554,6 @@ GNdupc <- ProbDup(kwic1 = GN1KWIC, kwic2 = GN2KWIC, method = "c",
                   encoding = "primary", semantic = FALSE)
 class(GNdupc)
 GNdupc
-```
-
-
-```{r, eval=FALSE}
-head(GNdupc[[1]])
-head(GNdupc[[2]])
 ```
 
 ### Matching Strategies
@@ -616,11 +600,6 @@ GNdup <- ProbDup(kwic1 = GNKWIC, method = "a", excep = exep,
 GNdup
 ```
 
-
-```{r, eval=FALSE}
-head(GNdup[[1]])
-```
-
 The maximum distance to be considered for a match can be specified by `max.dist` argument.
 
 ```{r}
@@ -628,11 +607,6 @@ GNdup <- ProbDup(kwic1 = GNKWIC, method = "a", excep = exep,
                  fuzzy = TRUE, max.dist = 1,
                  phonetic = FALSE, semantic = FALSE)
 GNdup
-```
-
-
-```{r, eval=FALSE}
-head(GNdup[[1]])
 ```
 
 Exact matching can be enforced with the argument `force.exact` set as TRUE. It can be used to avoid fuzzy matching when the number of alphabet characters in keywords is lesser than a critical value (`max.alpha`). Similarly, the value of `max.digit` can also be set according to the requirements to enforce exact matching. The default value of `Inf` avoids fuzzy matching and enforces exact matching for all keywords having any numerical characters. If `max.digit` and `max.alpha` are both set to `Inf`, exact matching will be enforced for all the keywords.
@@ -646,11 +620,6 @@ GNdup <- ProbDup(kwic1 = GNKWIC, method = "a", excep = exep,
 GNdup
 ```
 
-
-```{r, eval=FALSE}
-head(GNdup[[1]])
-```
-
 2. **Phonetic matching** of keywords is carried out using the Double Metaphone phonetic algorithm which is implemented as the helper function `DoubleMetaphone`, [@p00], to identify keywords that have the similar pronunciation.
 
 ```{r}
@@ -659,11 +628,6 @@ GNdup <- ProbDup(kwic1 = GNKWIC, method = "a", excep = exep,
                  phonetic = TRUE,
                  semantic = FALSE)
 GNdup
-```
-
-
-```{r, eval=FALSE}
-head(GNdup[[2]])
 ```
 
 Either the primary or alternate encodings can be used by specifying the `encoding` argument.
@@ -676,11 +640,6 @@ GNdup <- ProbDup(kwic1 = GNKWIC, method = "a", excep = exep,
 GNdup
 ```
 
-
-```{r, eval=FALSE}
-head(GNdup[[2]])
-```
-    
 The argument `phon.min.alpha` sets the limits for the number of alphabet characters to be present in a string for executing phonetic matching.
     
 ```{r}
@@ -691,11 +650,6 @@ GNdup <- ProbDup(kwic1 = GNKWIC, method = "a", excep = exep,
 GNdup
 ```
 
-
-```{r, eval=FALSE}
-head(GNdup[[2]])
-```
-    
 Similarly `min.enc` sets the limits for the number of characters to be present in the encoding of a keyword for phonetic matching.
     
 ```{r}
@@ -704,11 +658,6 @@ GNdup <- ProbDup(kwic1 = GNKWIC, method = "a", excep = exep,
                  phonetic = TRUE, encoding = "alternate", min.enc = 4,
                  semantic = FALSE)
 GNdup
-```
-
-
-```{r, eval=FALSE}
-head(GNdup[[2]])
 ```
 
 3. **Semantic matching** matches keywords based on a list of accession name synonyms supplied as list with character vectors of synonym sets (synsets) to the `syn` argument. Synonyms in this context refers to interchangeable identifiers or names by which an accession is recognized. Multiple keywords specified as members of the same synset in `syn` are matched. To facilitate accurate identification of synonyms from the KWIC index, identical data standardization operations using the `Merge*` and `DataClean` functions for both the original database fields and the synset list are recommended.
@@ -724,11 +673,6 @@ GNdup <- ProbDup(kwic1 = GNKWIC, method = "a", excep = exep,
                  fuzzy = FALSE, phonetic = FALSE,
                  semantic = TRUE, syn = syn)
 GNdup
-```
-
-
-```{r, eval=FALSE}
-head(GNdup[[3]])
 ```
 
 ### Memory and Speed Constraints
@@ -898,6 +842,7 @@ disGNdup2
 
 ```
 
+
 Once duplicate sets are retrieved they can be validated by manual clerical review by comparing with original PGR passport database(s) using the `ReviewProbDup` function. This function helps to retrieve PGR passport information associated with fuzzy, phonetic or semantic probable duplicate sets in an object of class `ProbDup` from the original databases(s) from which they were identified. The original information of accessions comprising a set, which have not been subjected to data standardization can be compared under manual clerical review for the validation of the set. By default only the fields(columns) which were used initially for creation of the KWIC indexes using the KWIC function are retrieved. Additional fields(columns) if necessary can be specified using the `extra.db1` and `extra.db2` arguments.
 
 When any primary ID/key records in the fuzzy, phonetic or semantic duplicate sets are found to be missing from the original databases specified in `db1` and `db2`, then they are ignored and only the matching records are considered for retrieving the information with a warning.
@@ -912,6 +857,7 @@ The column `DEL` can be used to indicate whether a record has to be deleted from
 
 The column `SPLIT` similarly can be used to indicate whether a record in a set has to be branched into a new set. A set of identical integers in this column other than the default `0` can be used to indicate that they are to be removed and assembled into a new set.
 
+
 ```{r}
 # Load the original database and clean the Primary ID/key field
 GN1000 <- GN1000
@@ -921,6 +867,11 @@ GN1000$NationalID <- DataClean(GN1000$NationalID)
 RevGNdup <- ReviewProbDup(pdup = disGNdup1, db1 = GN1000,
                           extra.db1 = c("SourceCountry", "TransferYear"),
                           max.count = 30, insert.blanks = TRUE)
+```
+
+\pagebreak
+
+```{r}
 head(RevGNdup)
 ```
 
@@ -1038,6 +989,93 @@ GNdupMerged <- MergeProbDup(GNdupSplit[[1]], GNdupSplit[[3]])
 GNdupMerged
 ```
 
+The summary of accessions according to a grouping factor field(column) in the original database(s) within the probable duplicate sets retrieved in a `ProbDup` object can be visualized by the `ViewProbDup` function. The resulting plot can be used to examine the extent of probable duplication within and between groups of accessions records.
+
+```{r}
+# Load PGR passport databases
+GN1 <- GN1000[!grepl("^ICG", GN1000$DonorID), ]
+GN1$DonorID <- NULL
+GN2 <- GN1000[grepl("^ICG", GN1000$DonorID), ]
+GN2 <- GN2[!grepl("S", GN2$DonorID), ]
+GN2$NationalID <- NULL
+
+GN1$SourceCountry <- toupper(GN1$SourceCountry)
+GN2$SourceCountry <- toupper(GN2$SourceCountry)
+
+GN1$SourceCountry <- gsub("UNITED STATES OF AMERICA", "USA", GN1$SourceCountry)
+GN2$SourceCountry <- gsub("UNITED STATES OF AMERICA", "USA", GN2$SourceCountry)
+
+# Specify as a vector the database fields to be used
+GN1fields <- c("NationalID", "CollNo", "OtherID1", "OtherID2")
+GN2fields <- c("DonorID", "CollNo", "OtherID1", "OtherID2")
+
+# Clean the data
+GN1[GN1fields] <- lapply(GN1[GN1fields], function(x) DataClean(x))
+GN2[GN2fields] <- lapply(GN2[GN2fields], function(x) DataClean(x))
+y1 <- list(c("Gujarat", "Dwarf"), c("Castle", "Cary"), c("Small", "Japan"),
+           c("Big", "Japan"), c("Mani", "Blanco"), c("Uganda", "Erect"),
+           c("Mota", "Company"))
+y2 <- c("Dark", "Light", "Small", "Improved", "Punjab", "SAM")
+y3 <- c("Local", "Bold", "Cary", "Mutant", "Runner", "Giant", "No.",
+        "Bunch", "Peanut")
+GN1[GN1fields] <- lapply(GN1[GN1fields],
+                         function(x) MergeKW(x, y1, delim = c("space", "dash")))
+GN1[GN1fields] <- lapply(GN1[GN1fields],
+                         function(x) MergePrefix(x, y2, delim = c("space", "dash")))
+GN1[GN1fields] <- lapply(GN1[GN1fields],
+                         function(x) MergeSuffix(x, y3, delim = c("space", "dash")))
+GN2[GN2fields] <- lapply(GN2[GN2fields],
+                         function(x) MergeKW(x, y1, delim = c("space", "dash")))
+GN2[GN2fields] <- lapply(GN2[GN2fields],
+                         function(x) MergePrefix(x, y2, delim = c("space", "dash")))
+GN2[GN2fields] <- lapply(GN2[GN2fields],
+                         function(x) MergeSuffix(x, y3, delim = c("space", "dash")))
+
+# Remove duplicated DonorID records in GN2
+GN2 <- GN2[!duplicated(GN2$DonorID), ]
+
+# Generate KWIC index
+GN1KWIC <- KWIC(GN1, GN1fields)
+GN2KWIC <- KWIC(GN2, GN2fields)
+
+# Specify the exceptions as a vector
+exep <- c("A", "B", "BIG", "BOLD", "BUNCH", "C", "COMPANY", "CULTURE",
+          "DARK", "E", "EARLY", "EC", "ERECT", "EXOTIC", "FLESH", "GROUNDNUT",
+          "GUTHUKAI", "IMPROVED", "K", "KUTHUKADAL", "KUTHUKAI", "LARGE",
+          "LIGHT", "LOCAL", "OF", "OVERO", "P", "PEANUT", "PURPLE", "R",
+          "RED", "RUNNER", "S1", "SAM", "SMALL", "SPANISH", "TAN", "TYPE",
+          "U", "VALENCIA", "VIRGINIA", "WHITE")
+
+# Specify the synsets as a list
+syn <- list(c("CHANDRA", "AH114"), c("TG1", "VIKRAM"))
+
+GNdupc <- ProbDup(kwic1 = GN1KWIC, kwic2 = GN2KWIC, method = "c",
+                  excep = exep, fuzzy = TRUE, phonetic = TRUE,
+                  encoding = "primary", semantic = TRUE, syn = syn)
+
+# Get the summary data.frames and Grob
+GNdupcView <- ViewProbDup(GNdupc, GN1, GN2, "SourceCountry", "SourceCountry",
+                         max.count = 30, select = c("INDIA", "USA"), order = "type",
+                         main = "Groundnut Probable Duplicates")
+
+```
+
+```{r, eval = FALSE}
+# View the summary data.frames
+GNdupcView[[1]]
+GNdupcView[[2]]
+```
+
+```{r, fig.height = 7, fig.width=10}
+# Plot the summary visualization
+library(gridExtra)
+grid.arrange(GNdupcView[[3]])
+```
+
+**Fig. 5.** Summary visualization of groundnut probable duplicate sets retrieved according to `SourceCountry` field.
+
+\pagebreak
+
 The function `KWCounts` can be used to compute the keyword counts from PGR passport database fields(columns) which are considered for identification of probable duplicates. These keyword counts can give a rough indication of the completeness of the data in such fields (Fig.&nbsp;3).
 
 ```{r, fig.height = 8}
@@ -1073,7 +1111,7 @@ legend("topright", paste("No. of records =",
                    nrow(GN[!GN$NationalID %in% GND, ])), bty = "n")
 ```
 
-**Fig. 4.** The keyword counts in the database fields considered for identification of probable duplicates for **A.**&nbsp;the entire `GN1000` dataset, **B.**&nbsp;the probable duplicate records alone and **C.**&nbsp;the unique records alone.
+**Fig. 6.** The keyword counts in the database fields considered for identification of probable duplicates for **A.**&nbsp;the entire `GN1000` dataset, **B.**&nbsp;the probable duplicate records alone and **C.**&nbsp;the unique records alone.
 
 ##Citing `PGRdup`
 ```{r, eval = FALSE}

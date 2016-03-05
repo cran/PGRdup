@@ -66,15 +66,15 @@
 KWCounts <- function(x, fields, excep) {
   if (is.data.frame(x) == FALSE) {
     # Check if x is a data.frame and stop if not
-    stop('x is not a data.frame')
+    stop("x is not a data.frame")
   }
   if (is.vector(fields) == FALSE) {
     # Check if fields is a vector or not
-    stop('fields is not a vector')
+    stop("fields is not a vector")
   }
   if (length(fields) == 1) {
     # Check if more than one field is given as input and stop if not
-    stop('Only one field given as input')
+    stop("Only one field given as input")
   }
   if (is.element(FALSE, fields %in% colnames(x)) == TRUE) {
     # Check if fields are present in x and stop if not
@@ -82,14 +82,13 @@ KWCounts <- function(x, fields, excep) {
   }
   # Check excep argument
   if (!is.null(excep) && is.vector(excep, mode = "character") == FALSE) {
-    stop('"excep" is not a character vector')
+    stop("'excep' is not a character vector")
   }
   if (!is.null(excep)) {
     excep <- toupper(excep)
   } else {
     excep <- ""
   }
-  
   #setDT(x)
   x <- as.data.table(x[fields])
   # Convert the fields in x to character
@@ -97,17 +96,20 @@ KWCounts <- function(x, fields, excep) {
   # Convert NAs to empty strings
   for (j in fields) set(x , which(is.na(x[[j]])), j, "")
   setDF(x)
-  if (is.element("", x[fields[1]]) | is.element(TRUE, duplicated(x[fields[1]]))) {
+  if (is.element("", x[fields[1]]) | is.element(TRUE,
+                                                duplicated(x[fields[1]]))) {
     # Check primary key/ID is unique and not NULL
-    stop('Primary key/ID field should be unique and not NULL\n Use PGRdup::ValidatePrimKey() to identify and rectify the aberrant records first')
+    stop("Primary key/ID field should be unique and not NULL\n Use PGRdup::ValidatePrimKey() to identify and rectify the aberrant records first")
   }
   #setDT(x)
-  
   x <- as.data.table(x)
   # Remove exceptions
-  x[, fields[-1] := lapply(.SD, function(x) gsub(paste0(excep, collapse = "|"), "", x) ), .SDcols = fields[-1]]
+  x[, fields[-1] := lapply(.SD, function(x) gsub(paste0(excep,
+                                                        collapse = "|"), "",
+                                                 x)), .SDcols = fields[-1]]
   # Get the word counts
-  x[, COUNT := stri_count(do.call(paste, c(.SD, sep = " ")), regex = "\\S+"), .SDcols = fields[-1]]
+  x[, COUNT := stri_count(do.call(paste, c(.SD, sep = " ")),
+                          regex = "\\S+"), .SDcols = fields[-1]]
   # Prepare output
   x[, fields[-1] := NULL]
   setnames(x, names(x), c("PRIM_ID", "COUNT"))

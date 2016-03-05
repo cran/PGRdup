@@ -111,10 +111,10 @@
 #' @import data.table
 #' @importFrom stringi stri_count_fixed
 #' @export
-ReconstructProbDup <- function (rev) {
+ReconstructProbDup <- function(rev) {
   # Check if rev is a data frame
   if (!is.data.frame(rev)) {
-    stop('"rev" is not a data frame')
+    stop("'rev' is not a data frame")
   }
   # Check if core fields are present
   core <- c("SET_NO", "TYPE", "PRIM_ID", "DEL", "SPLIT", "COUNT", "IDKW")
@@ -123,39 +123,41 @@ ReconstructProbDup <- function (rev) {
   core <- union(core, core2[j])
   if (is.element(FALSE, core %in% colnames(rev))) {
     # Check if core fields are present in rev and stop if not
-    stop('One or more core fields are missing in "rev"')
+    stop("One or more core fields are missing in 'rev'")
   }
-  if(!is.numeric(rev$SET_NO)) {
-    stop('"SET_NO" is not of class numeric or integer')
+  if (!is.numeric(rev$SET_NO)) {
+    stop("'SET_NO' is not of class numeric or integer")
   }
-  if(!is.character(rev$TYPE)) {
-    stop('"TYPE" is not of class character')
+  if (!is.character(rev$TYPE)) {
+    stop("'TYPE' is not of class character")
   }
-  if(!is.character(rev[, core2[j]])) {
-    stop('"K[*]" is not of class character')
+  if (!is.character(rev[, core2[j]])) {
+    stop("'K[*]' is not of class character")
   }
-  if(!is.character(rev$PRIM_ID)) {
-    stop('"PRIM_ID" is not of class character')
+  if (!is.character(rev$PRIM_ID)) {
+    stop("'PRIM_ID' is not of class character")
   }
-  if(!is.character(rev$IDKW)) {
-    stop('"IDKW" is not of class character')
+  if (!is.character(rev$IDKW)) {
+    stop("'IDKW' is not of class character")
   }
-  if(!is.numeric(rev$COUNT)) {
-    stop('"COUNT" is not of class numeric or integer')
+  if (!is.numeric(rev$COUNT)) {
+    stop("'COUNT' is not of class numeric or integer")
   }
-  if(!is.character(rev$DEL)) {
-    stop('"DEL" is not of class character')
+  if (!is.character(rev$DEL)) {
+    stop("'DEL' is not of class character")
   }
-  if(!is.numeric(rev$SPLIT)) {
-    stop('"SPLIT" is not of class numeric or integer')
+  if (!is.numeric(rev$SPLIT)) {
+    stop("'SPLIT' is not of class numeric or integer")
   }
-  
   # Retrieve method and fields
-  method <- regmatches(core2[j], gregexpr("(?<=\\[).*?(?=\\])", core2[j], perl=T))[[1]]
+  method <- regmatches(core2[j], gregexpr("(?<=\\[).*?(?=\\])", core2[j],
+                                          perl = TRUE))[[1]]
   fields <- list(k1 = NULL, k2 = NULL)
-  fields[[1]] <- colnames(rev)[which(grepl("^K1_", colnames(rev), perl = T))]
-  if (method == "b" | method == "b" ) {
-    fields[[2]] <- colnames(rev)[which(grepl("^K2_", colnames(rev), perl = T))]
+  fields[[1]] <- colnames(rev)[which(grepl("^K1_", colnames(rev),
+                                           perl = TRUE))]
+  if (method == "b" | method == "c" ) {
+    fields[[2]] <- colnames(rev)[which(grepl("^K2_", colnames(rev),
+                                             perl = TRUE))]
   }
   # Remove non-core fields
   #setDT(rev)
@@ -164,61 +166,61 @@ ReconstructProbDup <- function (rev) {
   #rev <- data.table(rev, key = "SET_NO")
   rev[ , setdiff(colnames(rev), core) := NULL]
   rev <- rev[ TYPE != ""]
-  rev[,SET_NO:= as.factor(rev$SET_NO)]
+  rev[, SET_NO := as.factor(rev$SET_NO)]
   # Cleanup column DEL
-  rev[,DEL:= toupper(DEL)]
-  rev[,DEL:= as.factor(DEL)]
-  setattr(rev$DEL,"levels", levels(rev$DEL)[levels(rev$DEL)!="Y" & levels(rev$DEL)!="N"] <- "N")
+  rev[, DEL := toupper(DEL)]
+  rev[, DEL := as.factor(DEL)]
+  setattr(rev$DEL,"levels",
+          levels(rev$DEL)[levels(rev$DEL) != "Y" & levels(rev$DEL) != "N"] <- "N")
   # Delete sets according to column DEL
   rev <- rev[DEL != "Y"]
   # Cleanup column SPLIT
-  rev[,SPLIT:= suppressWarnings(as.integer(SPLIT))]
-  invisible(rev[is.na(SPLIT), SPLIT:=0])
-  rev[,SPLIT:= as.factor(SPLIT)]
+  rev[, SPLIT := suppressWarnings(as.integer(SPLIT))]
+  invisible(rev[is.na(SPLIT), SPLIT := 0])
+  rev[, SPLIT := as.factor(SPLIT)]
   # Split sets according to column SPLIT
-  rev[,SET_NO:= interaction(rev$SET_NO, rev$SPLIT, drop=TRUE)]
-  rev[,SET_NO:= factor(SET_NO, levels = sort(levels(SET_NO)))]
+  rev[, SET_NO := interaction(rev$SET_NO, rev$SPLIT, drop = TRUE)]
+  rev[, SET_NO := factor(SET_NO, levels = sort(levels(SET_NO)))]
   setattr(rev$SET_NO,"levels", seq(from = 1, to = length(levels(rev$SET_NO))))
-  rev[,SET_NO:= as.numeric(SET_NO)]
+  rev[, SET_NO := as.numeric(SET_NO)]
   setkey(rev, key = "SET_NO")
   # Reconsturct
   rev[, c("DEL", "SPLIT", "COUNT") := NULL]
   rev[, PRIM_ID := paste(get(core2[j]), PRIM_ID, sep = "")]
   rev[, core2[j] := NULL]
-  
-  rev <- rev[, list(ID = paste0(sort(unique(PRIM_ID)), collapse=", "),
-                    IDKW = paste0(sort(unique(IDKW)), collapse=", ")), by = c("TYPE", "SET_NO")]
+  rev <- rev[, list(ID = paste0(sort(unique(PRIM_ID)), collapse = ", "),
+                    IDKW = paste0(sort(unique(IDKW)), collapse = ", ")),
+             by = c("TYPE", "SET_NO")]
   rev[, COUNT := stri_count_fixed(ID, ",") + 1]
   rev <- rev[COUNT != 1]
   setcolorder(rev, c("SET_NO", "TYPE", "ID", "IDKW", "COUNT"))
-  rev <- unique(rev, by=c("TYPE", "ID", "IDKW", "COUNT"))
-  
+  rev <- unique(rev, by = c("TYPE", "ID", "IDKW", "COUNT"))
   out <- list(FuzzyDuplicates = NULL, PhoneticDuplicates = NULL,
               SemanticDuplicates = NULL, DisjointDupicates = NULL)
   attr(out, "method") <- method
   fields[[1]] <-  gsub("^K1_", "", fields[[1]])
-  if (method == "b" | method == "b" ) {
+  if (method == "b" | method == "c" ) {
     fields[[2]] <- gsub("^K2_", "", fields[[2]])
   }
   attr(out, "fields") <- fields
   rm(fields, method)
-  
   types <- c("F", "P", "S", "D")
   # Reset the SET_NO
   setkey(rev, TYPE, ID, SET_NO)
-  rev[,TYPE:= as.factor(TYPE)][,SET_NO:= as.integer(SET_NO)]
-  rev[, SET_NO:=1:.N , by=TYPE]
-  rev[,SET_NO:= as.numeric(SET_NO)][,TYPE:= as.character(TYPE)]
+  rev[, TYPE := as.factor(TYPE)][,SET_NO := as.integer(SET_NO)]
+  rev[, SET_NO := 1:.N , by = TYPE]
+  rev[, SET_NO := as.numeric(SET_NO)][, TYPE := as.character(TYPE)]
   N <- length(seq_along(out))
   for (i in 1:N) {
     out[[i]] <- setDF(subset(rev, TYPE == types[i]))
     #out[[i]] <- as.data.frame(subset(rev, TYPE == types[i]))
   }
-  rev[,TYPE:= as.factor(TYPE)]
+  rev[, TYPE := as.factor(TYPE)]
   if (!"D" %in% levels(rev$TYPE)) {
     out[[4]] <- NULL
   }
-  out[which( unlist(lapply(seq_along(out), function(i) dim(out[[i]])[1])) == 0)] <- list(NULL)
+  out[which(unlist(lapply(seq_along(out),
+                          function(i) dim(out[[i]])[1])) == 0)] <- list(NULL)
   rm(rev)
   class(out) <- "ProbDup"
   return(out)

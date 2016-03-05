@@ -27,8 +27,7 @@
 #' @seealso \code{\link[PGRdup]{ProbDup}}
 #'   
 #' @export
-print.ProbDup <- function(x,...)
-{
+print.ProbDup <- function(x,...) {
   attr <- attributes(x)
   x <- x[!sapply(x, is.null)]
   attributes(x) <- append(attributes(x), attr[2:4])
@@ -37,9 +36,10 @@ print.ProbDup <- function(x,...)
                                             function(x) length(unique(unlist(strsplit(x$ID, split = ", "))))))
   Total <- as.character(colSums(m))
   Total[2] <- paste(Total[2], "(Distinct:",
-                    length(unique(unlist(lapply(x, function(x) unlist(strsplit(x$ID, split = ", ")))))),
+                    length(unique(unlist(lapply(x,
+                                                function(x) unlist(strsplit(x$ID,split = ", ")))))),
                     ")", sep = "")
-  m <- rbind(m, Total=Total)
+  m <- rbind(m, Total = Total)
   cat(paste("Method : ", attributes(x)$method, "\n", sep = ""))
   cat(paste("\n", "KWIC1 fields : ", sep = ""))
   cat(paste(attributes(x)$fields$k1, sep = ""))

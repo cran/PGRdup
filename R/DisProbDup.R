@@ -100,7 +100,7 @@
 #' @importFrom utils stack
 #' @importFrom stringi stri_count_fixed
 #' @export
-DisProbDup <- function (pdup, combine = c("F", "P", "S")) {
+DisProbDup <- function(pdup, combine = c("F", "P", "S")) {
   # Check arguments
   if (!is(pdup, "ProbDup")) {
     stop('"pdup" is not of class ProbDup')
@@ -114,28 +114,32 @@ DisProbDup <- function (pdup, combine = c("F", "P", "S")) {
   if (!is.null(pdup[["DisjointDupicates"]])) {
     pdup[1:3] <- NULL
     combine <- NULL
-    warning(paste('Only Disjoint duplicate sets encountered in "pdup"',
-                  '\nFurther disjoint sets, if any are returned', sep = ""))
+    warning(paste("Only Disjoint duplicate sets encountered in 'pdup'",
+                  "\nFurther disjoint sets, if any are returned", sep = ""))
   }
-  cond <- length(!unlist(lapply(pdup[1:3], is.null))[!unlist(lapply(pdup[1:3], is.null))]) == 1
+  cond <- length(!unlist(lapply(pdup[1:3],
+                                is.null))[!unlist(lapply(pdup[1:3],
+                                                         is.null))]) == 1
   if (is.null(pdup[["DisjointDupicates"]]) & cond) {
     combine <- NULL
-    warning(paste('Only one kind of disjoint set encountered in "pdup"',
-                  '\nDisjoint sets within the same are returned', sep = ""))
+    warning(paste("Only one kind of probable duplicate set encountered in 'pdup'",
+                  "\nDisjoint sets within the same are returned", sep = ""))
   }
   if (!is.null(combine)) {
     combine <- match.arg(combine, c("F", "P", "S"), several.ok = TRUE)
-    if (length(combine == 1) & is.element(TRUE, lapply(pdup[which(types %in% combine)], is.null))) {
+    if (length(combine == 1) & is.element(TRUE,
+                                          lapply(pdup[which(types %in% combine)],
+                                                 is.null))) {
       p <- unlist(lapply(pdup[which(types %in% combine)], is.null))
-      stop(paste('The following set specified in argument "combine" is missing from "pdup"',
-                 '\n', paste('#',names(p[p]), collapse = "\n")))
+      stop(paste("The following set specified in argument 'combine' is missing from 'pdup'",
+                 "\n", paste("#",names(p[p]), collapse = "\n")))
     }
     # Check and report any missing sets specified in combine
     if (is.element(TRUE, lapply(pdup[which(types %in% combine)], is.null))) {
       p <- unlist(lapply(pdup[which(types %in% combine)], is.null))
-      warning(paste('The following set specified in argument "combine" is missing from "pdup"',
-                    '\n', paste('#',names(p[p]), collapse = "\n"),
-                    '\nJoint disjoint of only the remaining sets are returned',
+      warning(paste("The following set specified in argument 'combine' is missing from 'pdup'",
+                    "\n", paste("#",names(p[p]), collapse = "\n"),
+                    "\nJoint disjoint of only the remaining sets are returned",
                     sep = ""))
     }
     # Rbind all in combine into pdup[4] and assign NULL to rest
@@ -150,7 +154,7 @@ DisProbDup <- function (pdup, combine = c("F", "P", "S")) {
       # Get and cast the disjoint sets by PRIM_ID
       idlist <- strsplit(pdup[[i]]$ID, ", ")
       idcomb <- do.call("rbind",lapply(idlist, embed, 2))
-      gg <- graph.edgelist(idcomb, directed=F)
+      gg <- graph.edgelist(idcomb, directed = FALSE)
       disidlist <- split(V(gg)$name, clusters(gg)$membership)
       disidlist <- stack(lapply(disidlist, sort))
       #setDT(disidlist)
@@ -164,13 +168,16 @@ DisProbDup <- function (pdup, combine = c("F", "P", "S")) {
       #setDT(pdup[[i]])
       pdup[[i]] <- as.data.table(pdup[[i]])
       #pdup[[i]] <- data.table(pdup[[i]])
-      pdup[[i]] <- pdup[[i]][, .(unlist(strsplit(IDKW, ", ", TRUE))), by = TYPE][, 
-                               .(IDKW = toString(sort(unique(unlist(strsplit(V1, ", ")))))), .(TYPE, ID = gsub(":.*", "", V1))]
+      pdup[[i]] <- pdup[[i]][, .(unlist(strsplit(IDKW, ", ", TRUE))), by = TYPE][,
+                               .(IDKW = toString(sort(unique(unlist(strsplit(V1,", ")))))), .(TYPE, ID = gsub(":.*", "", V1))]
       pdup[[i]] <- unique(pdup[[i]])
       setkey(pdup[[i]], ID)
       disidlist <- merge(disidlist, pdup[[i]])
-      disidlist <- disidlist[, list(ID = paste0(sort(unique(ID)), collapse=", "),
-                                    IDKW = paste0(sort(unique(IDKW)), collapse=", ")), by = c("TYPE", "SET_NO")]
+      disidlist <- disidlist[, list(ID = paste0(sort(unique(ID)),
+                                                collapse = ", "),
+                                    IDKW = paste0(sort(unique(IDKW)),
+                                                  collapse = ", ")),
+                             by = c("TYPE", "SET_NO")]
       disidlist[, COUNT := stri_count_fixed(ID, ",") + 1]
       setkey(disidlist, ID)
       disidlist[, SET_NO := seq(1, nrow(disidlist))]

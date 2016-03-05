@@ -26,8 +26,7 @@
 #' @seealso \code{\link[PGRdup]{KWIC}}
 #'   
 #' @export
-print.KWIC <- function(x,...)
-{
+print.KWIC <- function(x,...) {
   cat(paste("KWIC fields : ", sep = ""))
   cat(paste(x$Fields, sep = ""))
   cat(paste("\n", "Number of keywords : ", nrow(x[[1]]), sep = ""))
