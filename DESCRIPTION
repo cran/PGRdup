@@ -1,7 +1,7 @@
 Package: PGRdup
 Title: Discover Probable Duplicates in Plant Genetic Resources
         Collections
-Version: 0.2.2
+Version: 0.2.2.1
 Authors@R: c(
     person(c("J.", "Aravind"),
     email = "j.aravind@icar.gov.in",
@@ -30,7 +30,7 @@ License: GPL-2 | GPL-3
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
-Packaged: 2016-03-05 04:44:27 UTC; lenovo
+Packaged: 2016-03-07 14:51:34 UTC; ripley
 Author: J. Aravind [aut, cre],
   J. Radhamani [aut],
   Kalyani Srinivasan [aut],
@@ -39,4 +39,4 @@ Author: J. Aravind [aut, cre],
 Maintainer: J. Aravind <j.aravind@icar.gov.in>
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2016-03-05 09:14:44
+Date/Publication: 2016-03-09 17:36:34

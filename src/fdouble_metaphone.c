@@ -116,10 +116,9 @@ void MakeUpper(metastring * s)
 void IsVowel(metastring * s, int pos, int* answer)
 {
     char c;
-	
-	*answer = 0;
-    if ((pos < 0) || (pos >= s->length))
-		*answer = 0;
+
+    *answer = 0;
+    if ((pos < 0) || (pos >= s->length)) return;
 
     c = *(s->str + pos);
     if ((c == 'A') || (c == 'E') || (c == 'I') || (c =='O') || 
@@ -175,9 +174,8 @@ void StringAt(int* stringata, metastring * s, int start, int length, ...)
     char *test;
     char *pos;
     va_list ap;
-	*stringata =  0;//-------------------------------------------------->
-    if ((start < 0) || (start >= s->length))
-        *stringata =  0;
+    *stringata =  0;
+    if ((start < 0) || (start >= s->length)) return;
 
     pos = (s->str + start);
     va_start(ap, length);
@@ -191,8 +189,6 @@ void StringAt(int* stringata, metastring * s, int start, int length, ...)
     while (strcmp(test, ""));
 
     va_end(ap);
-
-    //*stringata =  0;//------------------------------>commented
 }
 
 

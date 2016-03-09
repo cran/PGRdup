@@ -1,4 +1,4 @@
-024086281fb2b6a5fc7623d2b6086e8c *DESCRIPTION
+c5c1e653bf1c898c71265d0930d7aca8 *DESCRIPTION
 ba3dbcfe6c3569846e0ea3047cf0436f *NAMESPACE
 151113a0daade69943d564821822f41f *NEWS
 9f28d3e1c30ec6342cd2110e6ea7bed4 *R/AddProbDup.R
@@ -50,7 +50,7 @@ c8bddf36029024543bcc569cf48c2bd9 *man/print.KWIC.Rd
 4a2061d93e2cc8a076d839021a4841f7 *man/print.ProbDup.Rd
 d07cc7a1a57fb8e577227cd0cbf93979 *man/read.genesys.Rd
 5076ae77a741918bfc455c5a11df3aa4 *src/double_metaphone.h
-85fdb03d9637471f9d2908541ee02051 *src/fdouble_metaphone.c
+04b59237de0187f2b539743873502eef *src/fdouble_metaphone.c
 f55413589bfb16c24f58870f1abc89d3 *vignettes/Introduction.Rmd
 c8f7c052f35a9816d36886714fae6610 *vignettes/bibliography.bibtex
 f9ea4da4b6be7e34bbfcfbcd5f604e65 *vignettes/imgs/PGRdup.png
