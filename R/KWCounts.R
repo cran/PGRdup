@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 #  A copy of the GNU General Public License is available at
-#  http://www.r-project.org/Licenses/
+#  https://www.r-project.org/Licenses/
 
 #' Generate keyword counts
 #' 
@@ -36,6 +36,8 @@
 #'   considered as the primary key or identifier (see \strong{Details}).
 #' @param excep A vector of the keywords not to be considered for the counts
 #'   (see \strong{Details}).
+#' @note For large number of exceptions and/or large data.frame computation of
+#' keyword counts may take some time.
 #' @examples
 #' # Load PGR passport database
 #' GN <- GN1000
@@ -94,7 +96,7 @@ KWCounts <- function(x, fields, excep) {
   # Convert the fields in x to character
   for (col in fields) set(x, j = col, value = as.character(x[[col]]))
   # Convert NAs to empty strings
-  for (j in fields) set(x , which(is.na(x[[j]])), j, "")
+  for (j in fields) set(x, which(is.na(x[[j]])), j, "")
   setDF(x)
   if (is.element("", x[fields[1]]) | is.element(TRUE,
                                                 duplicated(x[fields[1]]))) {
@@ -104,9 +106,17 @@ KWCounts <- function(x, fields, excep) {
   #setDT(x)
   x <- as.data.table(x)
   # Remove exceptions
-  x[, fields[-1] := lapply(.SD, function(x) gsub(paste0(excep,
-                                                        collapse = "|"), "",
-                                                 x)), .SDcols = fields[-1]]
+  if (length(excep) <= 100) {
+    x[, `:=`(fields[-1], lapply(.SD, function(x) gsub(paste0(excep,
+                                                             collapse = "|"), "", x))), .SDcols = fields[-1]]
+  } else {
+    iter <- rep(1:length(excep), each = 100, length.out = length(excep))
+    for (i in unique(iter)) {
+      in_iter <- iter == i
+      x[, `:=`(fields[-1], lapply(.SD, function(x) gsub(paste0(excep[in_iter],
+                                                               collapse = "|"), "", x))), .SDcols = fields[-1]]
+    }
+  }
   # Get the word counts
   x[, COUNT := stri_count(do.call(paste, c(.SD, sep = " ")),
                           regex = "\\S+"), .SDcols = fields[-1]]

@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 #  A copy of the GNU General Public License is available at
-#  http://www.r-project.org/Licenses/
+#  https://www.r-project.org/Licenses/
 
 
 
@@ -310,7 +310,7 @@ ProbDup <- function (kwic1, kwic2 = NULL, method = c("a", "b", "c"),
   # Check if kwic1 is of class KWIC
   if (is(kwic1, "KWIC")) {
     fields[[1]] <- kwic1[[3]]
-    kwic1 <- kwic1[[1]][!(kwic1[[1]]$KEYWORD %in% excep),c(1,3)]
+    kwic1 <- kwic1[[1]][!(kwic1[[1]]$KEYWORD %in% excep), c(1, 3)]
   } else {
     stop('"kwic1" is not of class KWIC')
   }
@@ -324,7 +324,7 @@ ProbDup <- function (kwic1, kwic2 = NULL, method = c("a", "b", "c"),
     }
     if (is(kwic2, "KWIC")) {
       fields[[2]] <- kwic2[[3]]
-      kwic2 <- kwic2[[1]][!(kwic2[[1]]$KEYWORD %in% excep),c(1,3)]
+      kwic2 <- kwic2[[1]][!(kwic2[[1]]$KEYWORD %in% excep), c(1, 3)]
     } else {
       stop('"kwic2" is not of class KWIC')
     }
@@ -408,7 +408,7 @@ ProbDup <- function (kwic1, kwic2 = NULL, method = c("a", "b", "c"),
     if (method == "c") {
       kwicQ <- as.data.table(rbind(kwicQ, kwicS))
       kwicQ <- kwicQ[, list(PRIM_ID = paste0(setdiff(sort(unique(unlist(strsplit(get("PRIM_ID"),
-                                                                                 split= ", ")))), ""), collapse = ", "),
+                                                                                 split = ", ")))), ""), collapse = ", "),
                             IDKW = paste0(setdiff(sort(unique(unlist(strsplit(get("IDKW"),
                                                                               split = ", ")))), ""), collapse = ", ")), by = "KEYWORD"]
       M <- nrow(kwicQ)
@@ -581,10 +581,10 @@ FuzzyDup <- function(kwic1, kwic2, max.dist, useBytes,
                                  ncol = dim(mixed_alpha_fuzzy)[2])
       rownames(mixed_digit_comb) <- which(in_iter & ind_mixedQ)
       if (dim(mixed_digit_fuzzy)[1] != 0) {
-        mixed_digit_comb[which(in_iter & ind_mixedQ &  !ind_mixed_digit_exact) %in% rownames(mixed_digit_comb),] <- mixed_digit_fuzzy
+        mixed_digit_comb[which(in_iter & ind_mixedQ &  !ind_mixed_digit_exact) %in% rownames(mixed_digit_comb), ] <- mixed_digit_fuzzy
       }
       if (dim(mixed_digit_exact)[1] != 0) {
-        mixed_digit_comb[which(in_iter & ind_mixedQ & ind_mixed_digit_exact) %in% rownames(mixed_digit_comb),] <- mixed_digit_exact
+        mixed_digit_comb[which(in_iter & ind_mixedQ & ind_mixed_digit_exact) %in% rownames(mixed_digit_comb), ] <- mixed_digit_exact
       }
       mixed <- mixed_alpha_fuzzy + mixed_digit_comb
       rm(mixed_alpha_fuzzy, mixed_digit_exact,
@@ -632,7 +632,7 @@ FuzzyDup <- function(kwic1, kwic2, max.dist, useBytes,
      ind_mixed_digit_exact, in_iter)
   cols <- setdiff(colnames(kwic1), c("KEYWORD", "PRIM_ID", "iter"))
   for (j in cols) {
-    set(kwic1,which(is.na(kwic1[[j]])),j,"")
+    set(kwic1, which(is.na(kwic1[[j]])), j, "")
   }
   if (method == "a" | method == "c") {
     kwic1[ind_exactQ2, FuzzydupIDKW := IDKW]
@@ -715,7 +715,7 @@ PhoneticDup <- function(kwic1, kwic2, encoding, useBytes,
       phon_digit_exact[phon_digit_exact != 0] <- Inf
       phon_dist_tr1 <-  which(which(in_iter & ind_phon) %in% which(in_iter & ind_phon_digitQ))
       phon_dist_tr2 <- which(which(ind_phonS) %in% which(ind_phon_digitS))
-      phon_dist[phon_dist_tr1,phon_dist_tr2] <- phon_dist[phon_dist_tr1,phon_dist_tr2] + phon_digit_exact
+      phon_dist[phon_dist_tr1, phon_dist_tr2] <- phon_dist[phon_dist_tr1, phon_dist_tr2] + phon_digit_exact
       rm(phon_digit_exact)
     }
     # Fetch duplicates to a new column
@@ -724,7 +724,7 @@ PhoneticDup <- function(kwic1, kwic2, encoding, useBytes,
                                                         function(x) paste(as.character(unlist(kwic2[ind_phonS]$IDKW[x == 0])),
                                                                           collapse = ", "))]
     }
-    rm(phon_dist,in_iter)
+    rm(phon_dist, in_iter)
     # update progress bar
     setTxtProgressBar(pb, i)
     cat("\rBlock", i, "/", max(kwic1$iter), "|")
@@ -732,7 +732,7 @@ PhoneticDup <- function(kwic1, kwic2, encoding, useBytes,
   close(pb)
   rm(ind_phon, pb, ind_phonS, ind_phon_digitQ, phon_digitQ, phon_digitS)
   for (j in c("IDKW", "PhoneticdupIDKW")) {
-    set(kwic1,which(is.na(kwic1[[j]])),j,"")
+    set(kwic1, which(is.na(kwic1[[j]])), j, "")
   }
   kwic1[, PhoneticdupID := gsub(":\\S+\\b", "", PhoneticdupIDKW)]
   kwic1 <- dupsets(kwic1, "P", method = method)
@@ -773,7 +773,7 @@ SemanticDup <- function(kwic1, kwic2, syn, useBytes, method) {
                                                         function(x) paste(as.character(unlist(kwic2[ind_semS]$IDKW[x == 0])),
                                                                           collapse = ", "))]
     }
-    rm(sem_dist,in_iter)
+    rm(sem_dist, in_iter)
     # update progress bar
     setTxtProgressBar(pb, i)
     cat("\rBlock", i, "/", max(kwic1$iter), "|")
@@ -781,13 +781,13 @@ SemanticDup <- function(kwic1, kwic2, syn, useBytes, method) {
   close(pb)
   rm(ind_sem, ind_semS)
   for (j in c("IDKW", "SemanticdupIDKW")) {
-    set(kwic1,which(is.na(kwic1[[j]])),j,"")
+    set(kwic1, which(is.na(kwic1[[j]])), j, "")
   }
   kwic1[, SemanticdupID := gsub(":\\S+\\b", "", SemanticdupIDKW)]
   kwic1 <- dupsets(kwic1, "S", method = method)
   # Remove synsets with single/unique members
   kwic1 <- kwic1[!unlist(lapply(strsplit( gsub("*?\\[\\S+:", "", kwic1$IDKW),
-                                          split = ", "), function(x) length(unique(x)))) == 1,]
+                                          split = ", "), function(x) length(unique(x)))) == 1, ]
   return(kwic1)
 }
 
@@ -797,10 +797,10 @@ dupsets <- function(kwicout, type, method) {
     setkey(kwicout, PRIM_ID)
     kwicout[, c("iter", "KEYWORD") := NULL]
     if (method == "b") {
-      kwicout[,  3 := paste(get(names(kwicout)[2]),
-                            get(names(kwicout)[3]), sep = ", "), with = FALSE]
-      kwicout[,  4 := paste(get(names(kwicout)[1]),
-                            get(names(kwicout)[4]), sep = ", "), with = FALSE]
+      kwicout[,  (3) := paste(get(names(kwicout)[2]),
+                            get(names(kwicout)[3]), sep = ", ")]
+      kwicout[,  (4) := paste(get(names(kwicout)[1]),
+                            get(names(kwicout)[4]), sep = ", ")]
     }
     kwicout[, IDKW := NULL]
     if (method != "b") {
@@ -844,7 +844,7 @@ fix.syn <- function(syn) {
     syn <- syn[!sapply(syn, function(x) length(x) == 1)]
     warning("synsets encountered in list 'syn' with length 1")
   }
-  syncomb <- do.call("rbind",lapply(syn, embed, 2))
+  syncomb <- do.call("rbind", lapply(syn, embed, 2))
   gg <- graph.edgelist(syncomb, directed = F)
   x <- split(V(gg)$name, clusters(gg)$membership)
   x <- lapply(x, sort)

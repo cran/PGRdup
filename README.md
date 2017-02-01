@@ -5,7 +5,7 @@ PGRdup: Discover Probable Duplicates in Plant Genetic Resources Collections
 
 ##### *J. Aravind, J. Radhamani, Kalyani Srinivasan, B. Ananda Subhash and R. K. Tyagi*
 
-###### Copyright (C) 2014, [ICAR-NBPGR](http://www.nbpgr.ernet.in/) ; License: [GPL-2 | GPL-3](http://www.r-project.org/Licenses/)
+###### Copyright (C) 2014, [ICAR-NBPGR](http://www.nbpgr.ernet.in/) ; License: [GPL-2 | GPL-3](https://www.r-project.org/Licenses/)
 
 The `R` package `PGRdup` was developed as a tool to aid genebank managers in the identification of probable duplicate accessions from plant genetic resources (PGR) passport databases.
 
@@ -96,7 +96,7 @@ Use these helper functions if needed. `ValidatePrimKey` can be used to check whe
 Tips
 ----
 
--   Use [`fread`](http://www.rdocumentation.org/packages/data.table/functions/fread) to rapidly read large files instead of `read.csv` or `read.table` in `base`.
+-   Use [`fread`](https://www.rdocumentation.org/packages/data.table/functions/fread) to rapidly read large files instead of `read.csv` or `read.table` in `base`.
 -   In case the PGR passport data is in any DBMS, use the appropriate [`R`-database interface packages](http://www.burns-stat.com/r-database-interfaces/) to get the required table as a `data.frame` in `R`.
 
 Note

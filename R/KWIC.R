@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 #  A copy of the GNU General Public License is available at
-#  http://www.r-project.org/Licenses/
+#  https://www.r-project.org/Licenses/
 
 
 
@@ -110,7 +110,7 @@ KWIC <- function(x, fields, min.freq = 10) {
   # Convert the fields in x to character
   for (col in fields) set(x, j = col, value = as.character(x[[col]]))
   # Convert NAs to empty strings
-  for (j in fields) set(x , which(is.na(x[[j]])), j, "")
+  for (j in fields) set(x, which(is.na(x[[j]])), j, "")
   setDF(x)
   if (is.element("", x[fields[1]]) | is.element(TRUE,
                                                 duplicated(x[fields[1]]))) {
@@ -128,7 +128,7 @@ KWIC <- function(x, fields, min.freq = 10) {
     K[[i]] <-  x[, list(KEYWORD = unlist(strsplit(get(fields[i]), " ")),
                         FIELD = fields[i]),
                  by = list(PRIM_ID = get(fields[1]), KWIC)]
-    K[[i]] <- K[[i]][!is.na(K[[i]]$KEYWORD),]
+    K[[i]] <- K[[i]][!is.na(K[[i]]$KEYWORD), ]
   }
   KWIC <- rbindlist(K)
   rm(K, x)

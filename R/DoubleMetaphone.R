@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 #  A copy of the GNU General Public License is available at
-#  http://www.r-project.org/Licenses/
+#  https://www.r-project.org/Licenses/
 
 
 
@@ -61,7 +61,7 @@ DoubleMetaphone <- function(str) {
   }
   if (any(grepl("NON_ASCII",
                 iconv(str, "latin1", "ASCII", sub = "NON_ASCII"))) == TRUE) {
-    str <- iconv(str,to = "ASCII//TRANSLIT")
+    str <- iconv(str, to = "ASCII//TRANSLIT")
     warning("Non-ASCII characters were encountered.")
   }
   out <- .C("fdouble_metaphone", as.character(str),

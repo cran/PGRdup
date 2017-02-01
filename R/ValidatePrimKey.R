@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 #  A copy of the GNU General Public License is available at
-#  http://www.r-project.org/Licenses/
+#  https://www.r-project.org/Licenses/
 
 
 
@@ -84,7 +84,7 @@ ValidatePrimKey <- function(x, prim.key) {
   Result <- list(message1 = NULL, Duplicates = NULL, message2 = NULL,
                  NullRecords = NULL)
   # Convert NAs to empty strings
-  x[prim.key][is.na(x[,prim.key])] <- ""
+  x[prim.key][is.na(x[, prim.key])] <- ""
   if (is.element("TRUE", duplicated(x[prim.key]))) {
     # Check if duplicated records are there in prim.key
     Result$message1 <- "ERROR: Duplicated records found in prim.key field"
@@ -93,12 +93,12 @@ ValidatePrimKey <- function(x, prim.key) {
                                                       fromLast = TRUE)
     Result$Duplicates <- subset(x, primdup == TRUE)
     Result$Duplicates[, "primdup"] <- NULL
-    Result$Duplicates <- Result$Duplicates[order(Result$Duplicates[prim.key]),]
+    Result$Duplicates <- Result$Duplicates[order(Result$Duplicates[prim.key]), ]
   } else {
     Result$message1 <- "OK: No duplicated records found in prim.key field"
     message(Result$message1)
   }
-  if (is.element("", x[,prim.key]) == TRUE) {
+  if (is.element("", x[, prim.key]) == TRUE) {
     # Check if empty characters are present in prim.key field
     Result$message2 <- "ERROR: NULL records found in prim.key field"
     message(Result$message2)

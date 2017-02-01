@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 #  A copy of the GNU General Public License is available at
-#  http://www.r-project.org/Licenses/
+#  https://www.r-project.org/Licenses/
 
 
 
@@ -161,7 +161,7 @@ ReviewProbDup <- function (pdup, db1, db2 = NULL,
     if (is.null(db2)) {
       stop(paste("argument 'db2' is missing, with no default.",
                  "\nSecond database is to be specified as method ",
-                 method," was used to generate 'pdup'", sep = ""))
+                 method, " was used to generate 'pdup'", sep = ""))
     }
   }
   if (is.element(FALSE, fields[[1]] %in% colnames(db1))) {
@@ -232,7 +232,7 @@ ReviewProbDup <- function (pdup, db1, db2 = NULL,
       pdup[[i]][, K1_PRIM_ID := gsub("\\[K2\\].*", "", PRIM_ID, perl = TRUE)]
       pdup[[i]][, K1_PRIM_ID := gsub("\\[K1\\]", "", K1_PRIM_ID, perl = TRUE)]
       pdup[[i]][, K1_PRIM_ID := as.character(K1_PRIM_ID)]
-      setkey(pdup[[i]],K1_PRIM_ID)
+      setkey(pdup[[i]], K1_PRIM_ID)
       # Check for IDs in pdup missing in db1
       if (length(setdiff(pdup[[i]]$K1_PRIM_ID[pdup[[i]]$K1_PRIM_ID != ""],
                          db1$K1_PRIM_ID)) != 0) {
@@ -241,9 +241,9 @@ ReviewProbDup <- function (pdup, db1, db2 = NULL,
                       "\nOnly matching records are merged"))
       }
       # Merge with db1
-      pdup[[i]] <- merge(pdup[[i]],db1, all.x = TRUE)
+      pdup[[i]] <- merge(pdup[[i]], db1, all.x = TRUE)
       pdup[[i]][, K1_PRIM_ID := NULL]
-      setkey(pdup[[i]],"SET_NO")
+      setkey(pdup[[i]], "SET_NO")
       # Set prefix to merged fields
       setnames(pdup[[i]], old = fields[[1]],
                new =  paste("K1", fields[[1]], sep = "_"))
@@ -252,7 +252,7 @@ ReviewProbDup <- function (pdup, db1, db2 = NULL,
         pdup[[i]][, K2_PRIM_ID := gsub("\\[K1\\].*", "", PRIM_ID, perl = TRUE)]
         pdup[[i]][, K2_PRIM_ID := gsub("\\[K2\\]", "", K2_PRIM_ID, perl = TRUE)]
         pdup[[i]][, K2_PRIM_ID := as.character(K2_PRIM_ID)]
-        setkey(pdup[[i]],K2_PRIM_ID)
+        setkey(pdup[[i]], K2_PRIM_ID)
         # Check for IDs in pdup missing in db1
         if (length(setdiff(pdup[[i]]$K2_PRIM_ID[pdup[[i]]$K2_PRIM_ID != ""],
                            db2$K2_PRIM_ID)) != 0) {
@@ -262,9 +262,9 @@ ReviewProbDup <- function (pdup, db1, db2 = NULL,
                         "\nOnly matching records are merged"))
         }
         # Merge with db1
-        pdup[[i]] <- merge(pdup[[i]],db2, all.x = TRUE)
+        pdup[[i]] <- merge(pdup[[i]], db2, all.x = TRUE)
         pdup[[i]][, K2_PRIM_ID := NULL]
-        setkey(pdup[[i]],"SET_NO")
+        setkey(pdup[[i]], "SET_NO")
         setnames(pdup[[i]], old = fields[[2]],
                  new =  paste("K2", fields[[2]], sep = "_"))
       }
@@ -278,8 +278,8 @@ ReviewProbDup <- function (pdup, db1, db2 = NULL,
   pdup[, PRIM_ID := gsub("\\[K1\\]_", "", PRIM_ID, perl = TRUE)]
   pdup[, PRIM_ID := gsub("\\[K2\\]_", "", PRIM_ID, perl = TRUE)]
   # Add review columns
-  pdup[,DEL := "N" ]
-  pdup[,SPLIT := 0 ]
+  pdup[, DEL := "N" ]
+  pdup[, SPLIT := 0 ]
   # Reset column order
   nameslist <- union(c("SET_NO", "TYPE", "K", "PRIM_ID",
                        "IDKW", "DEL", "SPLIT", "COUNT"),
@@ -305,7 +305,7 @@ ReviewProbDup <- function (pdup, db1, db2 = NULL,
   if (insert.blanks  == TRUE) {
     pdup[, TEMP := as.factor(SET_NO)]
     pdup[, TEMP := interaction(pdup$TEMP, as.factor(pdup$TYPE), drop = TRUE)]
-    setattr(pdup$TEMP,"levels", seq(from = 1, to = length(levels(pdup$TEMP))))
+    setattr(pdup$TEMP, "levels", seq(from = 1, to = length(levels(pdup$TEMP))))
     pdup[, TEMP := as.numeric(TEMP)]
     pdup <- setDT(pdup)[pdup[, c(.I, NA), TEMP]$V1][!.N]
     pdup[, TEMP := NULL]

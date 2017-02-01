@@ -34,7 +34,7 @@ vignette: |
 
 The goal of this document is to introduce the users to these functions and familiarise them with the workflow intended to fetch probable duplicate sets. This document assumes a basic knowledge of `R` programming language.
 
-The functions in this package are primarily built using the `R` packages [`data.table`](http://cran.r-project.org/web/packages/data.table/index.html), [`igraph`](http://cran.r-project.org/web/packages/igraph/index.html), [`stringdist`](http://cran.r-project.org/web/packages/stringdist/index.html) and [`stringi`](http://cran.r-project.org/web/packages/stringi/index.html).
+The functions in this package are primarily built using the `R` packages [`data.table`](https://cran.r-project.org/web/packages/data.table/index.html), [`igraph`](https://cran.r-project.org/web/packages/igraph/index.html), [`stringdist`](https://cran.r-project.org/web/packages/stringdist/index.html) and [`stringi`](https://cran.r-project.org/web/packages/stringi/index.html).
 
 \pagebreak
 
@@ -56,6 +56,7 @@ if("diagram" %in% rownames(installed.packages())) {
   elpos[15,2] <- elpos[15,2] + 0.0200
   elpos[16,2] <- elpos[16,2] + 0.0250
   elpos[17,2] <- elpos[17,2] + 0.0250
+  elpos[18,2] <- elpos[18,2] + 0.0250
   
   t <- as.data.frame(elpos)
   t[t$V1<0.5,][,1] <- t[t$V1<0.5,][,1] + 0.1
@@ -71,7 +72,7 @@ if("diagram" %in% rownames(installed.packages())) {
   par(mar = c(1, 1, 1, 1))
   openplotmat()
   
-  #text(elpos, lab = as.character(c(1:17)), cex = 2)
+  #text(elpos, lab = as.character(c(1:18)), cex = 2)
   
   textrect(c(0.5,0.5), radx = 0.35, rady = 0.48, lab = "" , box.col = "ivory", shadow.size=0)
   textrect(c(0.5,0.9375), radx = 0.35, rady = 0.045, lab = "" , box.col = "tan2", shadow.size=0, lcol="transparent")
@@ -125,7 +126,7 @@ if("diagram" %in% rownames(installed.packages())) {
             "KWIC", "ProbDup", "DisProbDup\nReviewProbDup\nReconstructProbDup",
             "ValidatePrimKey\nDoubleMetaphone\nKWCounts",
             "ParseProbDup\nSplitProbDup\nMergeProbDup",
-            "AddProbDup\n")
+            "AddProbDup\nViewProbDup")
   for (i in 1:dim(elposfunc)[1]){
     textplain(elposfunc[i,], lab = func[i], cex = 0.7, adj=c(0, 0.5), font=1, family = "sans", col="steelblue4")
   }
@@ -141,7 +142,7 @@ The package can be installed using the following function:
 ```{r, eval=FALSE}
 install.packages('PGRdup', dependencies=TRUE)
 ```
-Uninstalled dependencies (packages which `PGRdup` depends on *viz*- [`data.table`](http://cran.r-project.org/web/packages/data.table/index.html), [`igraph`](http://cran.r-project.org/web/packages/igraph/index.html), [`stringdist`](http://cran.r-project.org/web/packages/stringdist/index.html) and [`stringi`](http://cran.r-project.org/web/packages/stringi/index.html)) are also installed because of the argument `dependencies=TRUE`.
+Uninstalled dependencies (packages which `PGRdup` depends on *viz*- [`data.table`](https://cran.r-project.org/web/packages/data.table/index.html), [`igraph`](https://cran.r-project.org/web/packages/igraph/index.html), [`stringdist`](https://cran.r-project.org/web/packages/stringdist/index.html) and [`stringi`](https://cran.r-project.org/web/packages/stringi/index.html)) are also installed because of the argument `dependencies=TRUE`.
 
 Then the package can be loaded using the function
 ```{r, eval=FALSE}
@@ -160,9 +161,9 @@ class(GN1000)
 head(GN1000)
 ```
 
-If the passport data exists as an excel sheet, it can be first converted to a csv or tab delimited format and then easily loaded to the `R` environment using the functions `read.csv` and `read.table` respectively. Alternatively, the package [`readxl`](http://cran.r-project.org/web/packages/readxl/index.html) can be used to directly read the data from excel. In case of large csv files, the function `fread` in the [`data.table`](http://cran.r-project.org/web/packages/data.table/index.html) package can be used to rapidly load the data.
+If the passport data exists as an excel sheet, it can be first converted to a csv or tab delimited format and then easily loaded to the `R` environment using the functions `read.csv` and `read.table` respectively. Alternatively, the package [`readxl`](https://cran.r-project.org/web/packages/readxl/index.html) can be used to directly read the data from excel. In case of large csv files, the function `fread` in the [`data.table`](https://cran.r-project.org/web/packages/data.table/index.html) package can be used to rapidly load the data.
 
-If the PGR passport data is in a DBMS, the required table can be imported as a data frame into `R`. using the appropriate [`R`-database interface package](http://www.burns-stat.com/r-database-interfaces/). For example [`dbConnect`](http://cran.r-project.org/web/packages/dbConnect/index.html) for MySQL, [`ROracle`](http://cran.r-project.org/web/packages/ROracle/index.html) for Oracle etc.
+If the PGR passport data is in a DBMS, the required table can be imported as a data frame into `R`. using the appropriate [`R`-database interface package](http://www.burns-stat.com/r-database-interfaces/). For example [`dbConnect`](https://cran.r-project.org/web/packages/dbConnect/index.html) for MySQL, [`ROracle`](https://cran.r-project.org/web/packages/ROracle/index.html) for Oracle etc.
 
 The PGR data downloaded from [genesys](https://www.genesys-pgr.org/welcome) database as a [Darwin Core - Germplasm](https://github.com/dagendresen/darwincore-germplasm) zip archive can be imported into the `R` environment as a flat file `data.frame` using the `read.genesys` function.
 
@@ -680,7 +681,7 @@ As the number of keywords in the KWIC indexes increases, the memory consumption 
 
 The progress of matching is displayed in the console as number of keyword blocks completed out of the total number of blocks, the percentage of achievement and a text-based progress bar.
 
-In case of multi-byte characters in keywords, the speed of keyword matching is further dependent upon the `useBytes` argument as described in `help("stringdist-encoding")` for the `stringdist` function in the namesake [package](http://cran.r-project.org/web/packages/stringdist/index.html) [@van2014stringdist], which is made use of here for string matching.
+In case of multi-byte characters in keywords, the speed of keyword matching is further dependent upon the `useBytes` argument as described in `help("stringdist-encoding")` for the `stringdist` function in the namesake [package](https://cran.r-project.org/web/packages/stringdist/index.html) [@van2014stringdist], which is made use of here for string matching.
 
 The CPU time taken for retrieval of probable duplicate sets under different options for the arguments `chunksize` and `useBytes` can be visualized using the `microbenchmark` package (Fig.&nbsp;3).
 

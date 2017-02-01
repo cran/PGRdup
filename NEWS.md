@@ -1,3 +1,23 @@
+PGRdup 0.2.3
+---------------------------------------
+###UPDATED FUNCTIONS:
+ - `KWCounts` - Fixed error in case of large number of exceptions and fixed bug regarding non-exact removal of keyword exceptions.
+ - `ProbDup` - Changed code with a column vector specifying the columns having `with=FALSE` argument to the new preferred syntax in `data.table`.
+ - `ViewProbDup` - Fixed error 'formal argument "axis.ticks.y" matched by multiple actual arguments'.
+ - `ViewProbDup` - Fixed bug in case when all factor names in `select` argument are not present in `factor.db1` and/or `factor.db2`, the function stops. Now it gives an warning and stops only when none of the factor names in `select` are present in `factor.db*`.
+ 
+###OTHER NOTES:
+ - Added `rmarkdown` to suggests field in DESCRIPTION, as prompted by Jan Górecki.
+
+***
+
+PGRdup 0.2.2.1
+---------------------------------------
+###OTHER NOTES:
+ - Fixed memory access error in src/fdouble_metaphone.c (Thanks to Prof. Brian Ripley)
+ 
+***
+
 PGRdup 0.2.2
 ---------------------------------------
 ###NEW FUNCTIONS:
@@ -36,7 +56,7 @@ PGRdup 0.2.1
 
 ###OTHER NOTES:
  - Edited README.md formatting.
- - Added diagram, microbenchmark and wordcloud (required for vignette) to suggests field in DESCRIPTION.
+ - Added `diagram`, `microbenchmark` and `wordcloud` (required for vignette) to suggests field in DESCRIPTION.
  - Added imports to functions from `methods`, `stats` and `utils` as `R CMD check --as-cran` now checks code usage (via `codetools`) with only the base package attached.
  - Dropped the abbreviation PGR in the title in DESCRIPTION as it is mentioned in the description text.
  

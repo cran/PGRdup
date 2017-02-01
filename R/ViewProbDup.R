@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 #  A copy of the GNU General Public License is available at
-#  http://www.r-project.org/Licenses/
+#  https://www.r-project.org/Licenses/
 
 #' Visualize the probable duplicate sets retrieved in a \code{ProbDup} object
 #' 
@@ -43,7 +43,7 @@
 #'   per factor level. \cr \code{Summary2} \tab The summary \code{data.frame} of
 #'   number of accessions and sets per each type of sets classified according to
 #'   factor levels. \cr \code{SummaryGrob} \tab A grid graphical object (Grob) 
-#'   of the summary visualization plot. \cr }
+#'   of the summary visualization plot. Can be plotted using the \code{grid.arrange} function \cr }
 #'   
 #' @note When any primary ID/key records in the fuzzy, phonetic or semantic 
 #'   duplicate sets are found to be missing from the original databases 
@@ -142,6 +142,9 @@
 #' GNdupcView <- ViewProbDup(GNdupc, GN1, GN2, "SourceCountry", "SourceCountry",
 #'                          max.count = 30, select = c("INDIA", "USA"), order = "type",
 #'                          main = "Groundnut Probable Duplicates")
+#'
+#'library(gridExtra)                                                    
+#'grid.arrange(GNdupcView$SummaryGrob)                          
 #' 
 #' }       
 #' @seealso \code{\link[PGRdup]{ProbDup}}, \code{\link[PGRdup]{DisProbDup}}, 
@@ -180,7 +183,6 @@
 #' @importFrom utils head
 #' @export
 
-
 ViewProbDup <- function(pdup, db1, db2 = NULL,
                              factor.db1, factor.db2 = NULL,
                              max.count = 30, select, order = "type",
@@ -195,7 +197,7 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
     if (is.null(db2)) {
       stop(paste("argument 'db2' is missing, with no default.",
                  "\nSecond database is to be specified as method ",
-                 method," was used to generate 'pdup'", sep = ""))
+                 method, " was used to generate 'pdup'", sep = ""))
     }
   }
   if (is.element(FALSE, fields[[1]] %in% colnames(db1))) {
@@ -215,7 +217,10 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
   }
   if (FALSE %in% (select %in% db1[, factor.db1])) {
     Pt <- data.frame(select, check = select %in% db1[, factor.db1], stringsAsFactors = F)
-    stop(paste("The following selected factor(s) is/are missing from 'factor.db1' column",
+    if (!(TRUE %in% Pt$check)) {
+      stop("None of the factor(s) specified in the 'select' argument are present in the 'factor.db1' column")
+    }
+    warning(paste("The following selected factor(s) is/are missing from 'factor.db1' column",
                paste(Pt[Pt$check == FALSE, 1], collapse = ", "), sep = "\n"))
   }
   fields[[1]] <- union(fields[[1]], factor.db1)
@@ -253,7 +258,10 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
     if (FALSE %in% (select %in% db2[, factor.db2])) {
       Pt <- data.frame(select, check = select %in% db2[, factor.db2],
                        stringsAsFactors = F)
-      stop(paste("The following selected factor(s) is/are missing from 'factor.db2' column",
+      if (!(TRUE %in% Pt$check)) {
+        stop("None of the factor(s) specified in the 'select' argument are present in the 'factor.db1' column")
+      }
+      warning(paste("The following selected factor(s) is/are missing from 'factor.db2' column",
                  paste(Pt[Pt$check == FALSE, 1], collapse = ", "), sep = "\n"))
     }
 
@@ -294,7 +302,7 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
       })
       pdup <- suppressWarnings(DisProbDup(pdup))
     } else {
-      pdup <- DisProbDup(pdup, combine = tstr[tstr$is.null == FALSE,]$names)
+      pdup <- DisProbDup(pdup, combine = tstr[tstr$is.null == FALSE, ]$names)
     }
   }
 
@@ -309,6 +317,7 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
                                          extra.db1 = factor.db1,
                                          extra.db2 = factor.db2,
                                          max.count, insert.blanks = FALSE))
+
   # Prepare the sets
   if (is.null(factor.db2)) {
     cols <- c("SET_NO", "PRIM_ID",
@@ -332,7 +341,7 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
   factorlevels <- setdiff(colnames(sets), "SET_NO")
   Nfactorlevels <- paste0("No.Acc. (", factorlevels, ")")
   setnames(sets, old = factorlevels, new = Nfactorlevels)
-  sets[, (factorlevels) := data.frame(matrix(ifelse(sets[,Nfactorlevels, with = FALSE] != 0, 1, 0),
+  sets[, (factorlevels) := data.frame(matrix(ifelse(sets[, Nfactorlevels, with = FALSE] != 0, 1, 0),
                                              ncol = length(Nfactorlevels)))]
   sets[, WITHIN := ifelse(rowSums(sets[, factorlevels, with = FALSE]) == 1,
                           1, 0)]
@@ -365,7 +374,7 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
   sets <- rbind(sets, orps)
   setkeyv(sets, append(factorlevels, "WITHIN"))
   summ1 <- sets[, lapply(.SD, sum), .SDcols = Nfactorlevels, by = bby]
-  summ2 <- sets[, list(NO.ACC = sum(NO.ACC),NO.SETS = .N), by = bby]
+  summ2 <- sets[, list(NO.ACC = sum(NO.ACC), NO.SETS = .N), by = bby]
   summ <- merge(summ1, summ2)
   summ <- summ[, lapply(.SD, as.numeric)]
   summ[, KIND := as.factor(rownames(summ))]
@@ -414,7 +423,9 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
           axis.text.y = element_text(colour = "black"),
           panel.grid.major.x = element_line(colour = "gray83"),
           panel.grid.minor.x = element_blank(),
-          plot.margin = unit(c(0,0.5,0.1,0.5), "cm")) +
+		  panel.grid.major.y = element_line(colour = "gray33",
+                                            linetype = "dotted"),
+          plot.margin = unit(c(0, 0.5, 0.1, 0.5), "cm")) +
     geom_bar(sbar, mapping = aes(x = KIND, y = value, fill = variable),
              stat = "identity") +
     geom_rect(data = shading,
@@ -440,7 +451,7 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
           panel.grid.minor.x = element_blank(),
           panel.grid.major.y = element_line(colour = "gray33",
                                             linetype = "dotted"),
-          plot.margin = unit(c(1,0.5,0.3,0.5), "cm")) +
+          plot.margin = unit(c(1, 0.5, 0.3, 0.5), "cm")) +
     geom_point(dotp, mapping = aes(x = KIND, y = value), colour = "gray23",
                size = 3, pch = 18, na.rm = TRUE) +
     geom_rect(data = shading,
@@ -464,17 +475,16 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
   matg <- ggplot() +
     theme(panel.background = element_rect(fill = "transparent"),
           axis.title.x =  element_text(colour = "black",
-                                       margin = margin(20,0,20,0)),
+                                       margin = margin(20, 0, 20, 0)),
           axis.ticks.x = element_blank(),
           axis.text.x = element_blank(), #<>#
-          axis.ticks.y = element_blank(),
           axis.line = element_line(colour = NA),
           axis.line.y = element_line(colour = "black"),
           axis.ticks.y = element_line(colour = "black"),
           axis.text.y = element_text(colour = "black"),
           axis.title.y = element_blank(), #<>#
           #legend.position = "none", #<>#
-          plot.margin = unit(c(0,0.5,0.5,0.5), "cm"),
+          plot.margin = unit(c(0, 0.5, 0.5, 0.5), "cm"),
           #legend.title = element_blank(),
           panel.grid = element_blank()) +
     geom_tile(data = mat, mapping = aes(y = variable, x = as.factor(KIND)),
@@ -489,7 +499,7 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
                colour = "gray73", alpha = 0.6, size = 5, na.rm = TRUE) +
     geom_point(data = mat, aes(y = variable, x = KIND, shape = mat$shape2),
                colour = "gray23",  size = 5,  na.rm = TRUE) +
-    geom_line(data = mat, aes(y = variable, x = KIND, shape = mat$shape2,
+    geom_line(data = mat, aes(y = variable, x = KIND,
                               group = KIND2),
               colour = "gray23",  size = 1,  na.rm = TRUE) +
     #coord_flip() +
@@ -515,10 +525,10 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
           axis.ticks.x = element_line(colour = "black"),
           axis.text.x = element_text(colour = "black"),
           axis.title.x = element_text(colour = "black",
-                                      margin = margin(20,0,20,0)),
+                                      margin = margin(20, 0, 20, 0)),
           panel.grid.major.y = element_line(colour = "gray93"),
           panel.grid.minor.y = element_blank(),
-          plot.margin = unit(c(0,0,0.5,0), "cm")) +
+          plot.margin = unit(c(0, 0, 0.5, 0), "cm")) +
     geom_bar(stat = "identity", position = "identity") +
     ylab("No. of accessions") +
     coord_flip() +
@@ -535,7 +545,7 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
                                sum(nacc$nacc),
                                sum(sbar[sbar$KIND %in% dotp[!is.na(dotp$value), ]$KIND, ]$value),
                                sum(sbar[!sbar$KIND %in% dotp[!is.na(dotp$value), ]$KIND, ]$value)))
-  smry1 <- smry[3:4,]
+  smry1 <- smry[3:4, ]
   smry1$fraction <- smry1$Count / sum(smry1$Count)
   smry1$ymax <- cumsum(smry1$fraction)
   smry1$ymin <- c(0, head(smry1$ymax, n = -1))
@@ -554,8 +564,8 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
     geom_text(aes(x = 3.5, y = ( (ymin + ymax) / 2), label = label)) +
     xlab("") +
     ylab("") +
-    labs(title = paste("\n\nTotal no. of sets = ", smry[1,]$Count, "\n",
-                       "Total no. of accessions  = ", smry[2,]$Count,
+    labs(title = paste("\n\nTotal no. of sets = ", smry[1, ]$Count, "\n",
+                       "Total no. of accessions  = ", smry[2, ]$Count,
                        sep = ""))
   # Get and modify grobs
   naccg1 <- ggplotGrob(naccg + theme(legend.position = "none"))
@@ -574,13 +584,13 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
                              legend, sbarg1,
                              naccg1, matg1,
                              ncol = 2, widths = c(0.5, 1.5),
-                             heights = c(0.8,1,0.6),
+                             heights = c(0.8, 1, 0.6),
                              top = textGrob(main, just = "top"))
   Summary1 <- data.frame("Factor" = nacc$factor,
                          "No. of accessions" = nacc$nacc,
                         check.names = FALSE, stringsAsFactors = FALSE)
   Summary2 <- as.data.table(summ)
-  Summary2[, c("singles","shape") := NULL]
+  Summary2[, c("singles", "shape") := NULL]
   setcolorder(Summary2, union("KIND", setdiff(colnames(Summary2), "KIND")))
   setnames(Summary2, old = "KIND", "Type of sets retrieved")
   setnames(Summary2, old = "NO.ACC", "Total no. of accessions")

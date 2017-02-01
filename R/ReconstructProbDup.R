@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 #  A copy of the GNU General Public License is available at
-#  http://www.r-project.org/Licenses/
+#  https://www.r-project.org/Licenses/
 
 
 
@@ -164,13 +164,13 @@ ReconstructProbDup <- function(rev) {
   rev <- as.data.table(rev)
   setkey(rev, SET_NO)
   #rev <- data.table(rev, key = "SET_NO")
-  rev[ , setdiff(colnames(rev), core) := NULL]
+  rev[, setdiff(colnames(rev), core) := NULL]
   rev <- rev[ TYPE != ""]
   rev[, SET_NO := as.factor(rev$SET_NO)]
   # Cleanup column DEL
   rev[, DEL := toupper(DEL)]
   rev[, DEL := as.factor(DEL)]
-  setattr(rev$DEL,"levels",
+  setattr(rev$DEL, "levels",
           levels(rev$DEL)[levels(rev$DEL) != "Y" & levels(rev$DEL) != "N"] <- "N")
   # Delete sets according to column DEL
   rev <- rev[DEL != "Y"]
@@ -181,7 +181,7 @@ ReconstructProbDup <- function(rev) {
   # Split sets according to column SPLIT
   rev[, SET_NO := interaction(rev$SET_NO, rev$SPLIT, drop = TRUE)]
   rev[, SET_NO := factor(SET_NO, levels = sort(levels(SET_NO)))]
-  setattr(rev$SET_NO,"levels", seq(from = 1, to = length(levels(rev$SET_NO))))
+  setattr(rev$SET_NO, "levels", seq(from = 1, to = length(levels(rev$SET_NO))))
   rev[, SET_NO := as.numeric(SET_NO)]
   setkey(rev, key = "SET_NO")
   # Reconsturct
@@ -207,8 +207,8 @@ ReconstructProbDup <- function(rev) {
   types <- c("F", "P", "S", "D")
   # Reset the SET_NO
   setkey(rev, TYPE, ID, SET_NO)
-  rev[, TYPE := as.factor(TYPE)][,SET_NO := as.integer(SET_NO)]
-  rev[, SET_NO := 1:.N , by = TYPE]
+  rev[, TYPE := as.factor(TYPE)][, SET_NO := as.integer(SET_NO)]
+  rev[, SET_NO := 1:.N, by = TYPE]
   rev[, SET_NO := as.numeric(SET_NO)][, TYPE := as.character(TYPE)]
   N <- length(seq_along(out))
   for (i in 1:N) {

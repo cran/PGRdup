@@ -39,7 +39,7 @@ A list containing the following objects: \tabular{ll}{
   per factor level. \cr \code{Summary2} \tab The summary \code{data.frame} of
   number of accessions and sets per each type of sets classified according to
   factor levels. \cr \code{SummaryGrob} \tab A grid graphical object (Grob) 
-  of the summary visualization plot. \cr }
+  of the summary visualization plot. Can be plotted using the \code{grid.arrange} function \cr }
 }
 \description{
 \code{ViewProbDup} plots summary visualizations of accessions within the
@@ -144,6 +144,9 @@ GNdupc <- ProbDup(kwic1 = GN1KWIC, kwic2 = GN2KWIC, method = "c",
 GNdupcView <- ViewProbDup(GNdupc, GN1, GN2, "SourceCountry", "SourceCountry",
                          max.count = 30, select = c("INDIA", "USA"), order = "type",
                          main = "Groundnut Probable Duplicates")
+
+library(gridExtra)                                                    
+grid.arrange(GNdupcView$SummaryGrob)                          
 
 }       
 }

@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 #  A copy of the GNU General Public License is available at
-#  http://www.r-project.org/Licenses/
+#  https://www.r-project.org/Licenses/
 
 
 
@@ -132,13 +132,13 @@ DisProbDup <- function(pdup, combine = c("F", "P", "S")) {
                                                  is.null))) {
       p <- unlist(lapply(pdup[which(types %in% combine)], is.null))
       stop(paste("The following set specified in argument 'combine' is missing from 'pdup'",
-                 "\n", paste("#",names(p[p]), collapse = "\n")))
+                 "\n", paste("#", names(p[p]), collapse = "\n")))
     }
     # Check and report any missing sets specified in combine
     if (is.element(TRUE, lapply(pdup[which(types %in% combine)], is.null))) {
       p <- unlist(lapply(pdup[which(types %in% combine)], is.null))
       warning(paste("The following set specified in argument 'combine' is missing from 'pdup'",
-                    "\n", paste("#",names(p[p]), collapse = "\n"),
+                    "\n", paste("#", names(p[p]), collapse = "\n"),
                     "\nJoint disjoint of only the remaining sets are returned",
                     sep = ""))
     }
@@ -153,7 +153,7 @@ DisProbDup <- function(pdup, combine = c("F", "P", "S")) {
     if (!is.null(pdup[[i]])) {
       # Get and cast the disjoint sets by PRIM_ID
       idlist <- strsplit(pdup[[i]]$ID, ", ")
-      idcomb <- do.call("rbind",lapply(idlist, embed, 2))
+      idcomb <- do.call("rbind", lapply(idlist, embed, 2))
       gg <- graph.edgelist(idcomb, directed = FALSE)
       disidlist <- split(V(gg)$name, clusters(gg)$membership)
       disidlist <- stack(lapply(disidlist, sort))
@@ -169,7 +169,8 @@ DisProbDup <- function(pdup, combine = c("F", "P", "S")) {
       pdup[[i]] <- as.data.table(pdup[[i]])
       #pdup[[i]] <- data.table(pdup[[i]])
       pdup[[i]] <- pdup[[i]][, .(unlist(strsplit(IDKW, ", ", TRUE))), by = TYPE][,
-                               .(IDKW = toString(sort(unique(unlist(strsplit(V1,", ")))))), .(TYPE, ID = gsub(":.*", "", V1))]
+                               .(IDKW = toString(sort(unique(unlist(strsplit(V1, ", ")))))),
+                               .(TYPE, ID = gsub(":.*", "", V1))]
       pdup[[i]] <- unique(pdup[[i]])
       setkey(pdup[[i]], ID)
       disidlist <- merge(disidlist, pdup[[i]])

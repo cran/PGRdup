@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 #  A copy of the GNU General Public License is available at
-#  http://www.r-project.org/Licenses/
+#  https://www.r-project.org/Licenses/
 
 #' Prints summary of \code{ProbDup} object.
 #' 
@@ -27,7 +27,7 @@
 #' @seealso \code{\link[PGRdup]{ProbDup}}
 #'   
 #' @export
-print.ProbDup <- function(x,...) {
+print.ProbDup <- function(x, ...) {
   attr <- attributes(x)
   x <- x[!sapply(x, is.null)]
   attributes(x) <- append(attributes(x), attr[2:4])
@@ -37,7 +37,7 @@ print.ProbDup <- function(x,...) {
   Total <- as.character(colSums(m))
   Total[2] <- paste(Total[2], "(Distinct:",
                     length(unique(unlist(lapply(x,
-                                                function(x) unlist(strsplit(x$ID,split = ", ")))))),
+                                                function(x) unlist(strsplit(x$ID, split = ", ")))))),
                     ")", sep = "")
   m <- rbind(m, Total = Total)
   cat(paste("Method : ", attributes(x)$method, "\n", sep = ""))

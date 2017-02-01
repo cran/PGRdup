@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 #  A copy of the GNU General Public License is available at
-#  http://www.r-project.org/Licenses/
+#  https://www.r-project.org/Licenses/
 
 
 
@@ -125,7 +125,7 @@ AddProbDup <- function(pdup, db, addto = c("I", "II"), max.count = 30) {
   }
   if (!fields[1] %in% colnames(db)) {
     stop(paste('Column(field) matching the primary ID/key "',
-               fields[1],'" is not found in "db"', sep = ""))
+               fields[1], '" is not found in "db"', sep = ""))
   }
   if (is.element("FALSE", fields %in% colnames(db)) == TRUE) {
     # Check if fields are present in x and stop if not
@@ -135,7 +135,7 @@ AddProbDup <- function(pdup, db, addto = c("I", "II"), max.count = 30) {
   db <- as.data.table(db)
   setkeyv(db, fields[[1]])
   # Retrieve the sets with "[K*]" according to argument addto
-  pdup <- lapply(pdup, function(x) x[grepl(p , x$ID, fixed = TRUE),])
+  pdup <- lapply(pdup, function(x) x[grepl(p, x$ID, fixed = TRUE), ])
   #invisible(lapply(seq_along(pdup), function(i) pdup[[i]]$PRIM_ID <<- gsub(p, "", pdup[[i]]$PRIM_ID, fixed = TRUE)))
   types <- c("F", "P", "S", "D")
   types2 <- c("Fuzzy", "Phonetic", "Semantic", "Disjoint")
@@ -146,7 +146,7 @@ AddProbDup <- function(pdup, db, addto = c("I", "II"), max.count = 30) {
       pdup[[i]] <- as.data.table(pdup[[i]])
       pdup[[i]] <- subset(pdup[[i]], COUNT <= max.count)
       pdup[[i]][, TYPE := NULL]
-      pdup[[i]] <- pdup[[i]][, list(PRIM_ID = unlist(strsplit(ID , ", " ))) ,
+      pdup[[i]] <- pdup[[i]][, list(PRIM_ID = unlist(strsplit(ID, ", " ))),
                              by = list(SET_NO, IDKW, ID)]
       if (method == "b" | method == "c") {
         if (addto == "I") {
@@ -161,7 +161,7 @@ AddProbDup <- function(pdup, db, addto = c("I", "II"), max.count = 30) {
       # Aggregate according to ID
       pdup[[i]] <- pdup[[i]][, list(SET_NO = paste0(sort(unique(SET_NO)),
                                                     collapse = ", "),
-                                    IDKW = paste0(sort(unique(unlist(strsplit(IDKW , ", ")))),
+                                    IDKW = paste0(sort(unique(unlist(strsplit(IDKW, ", ")))),
                                                   collapse = ", "),
                                     ID = paste0(sort(unique(unlist(strsplit(ID, ", ")))),
                                                 collapse = ", ")), by = PRIM_ID]
@@ -171,8 +171,8 @@ AddProbDup <- function(pdup, db, addto = c("I", "II"), max.count = 30) {
                new = paste(types[i], colnames(pdup[[i]]), sep = "_"))
       setnames(pdup[[i]], old = paste(types[i], "PRIM_ID", sep = "_"),
                new = fields[1])
-      if (length(setdiff(pdup[[i]][,get(fields[1])],
-                         db[,get(fields[1])])) != 0) {
+      if (length(setdiff(pdup[[i]][, get(fields[1])],
+                         db[, get(fields[1])])) != 0) {
         warning(paste("Encountered primary ID records in",
                       types2[i], "probable duplicate sets missing from 'db'.",
                       "\nOnly matching records are merged"))

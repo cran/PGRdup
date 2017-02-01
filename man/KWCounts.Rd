@@ -34,6 +34,10 @@ The keyword counts can give a rough indication of the completeness of the
 data in the database fields being used for identification of probable 
 duplicates.
 }
+\note{
+For large number of exceptions and/or large data.frame computation of
+keyword counts may take some time.
+}
 \examples{
 # Load PGR passport database
 GN <- GN1000
