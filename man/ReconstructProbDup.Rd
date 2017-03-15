@@ -104,4 +104,3 @@ lapply(GNdup2, nrow)
 \seealso{
 \code{\link[PGRdup]{ProbDup}}, \code{\link[PGRdup]{ReviewProbDup}}
 }
-

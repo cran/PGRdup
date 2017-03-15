@@ -151,4 +151,3 @@ write.csv(file="Duplicate sets for review.csv", x=RevGNdup)
 \code{\link[PGRdup]{DataClean}}, \code{\link[PGRdup]{KWIC}}, 
   \code{\link[PGRdup]{ProbDup}}
 }
-

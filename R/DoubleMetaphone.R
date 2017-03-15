@@ -53,7 +53,7 @@
 #' str3 <- c("J\xf5geva", "Jogeva")
 #' DoubleMetaphone(str3) }
 #' @export
-#' @useDynLib PGRdup fdouble_metaphone
+#' @useDynLib PGRdup, .registration = TRUE
 DoubleMetaphone <- function(str) {
   if (is.character(str) == FALSE) {
     # Check if str is a character vector and stop if not

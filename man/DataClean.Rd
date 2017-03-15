@@ -96,4 +96,3 @@ DataClean(names)
   \code{\link[PGRdup]{MergeKW}}, \code{\link[PGRdup]{KWIC}}, 
   \code{\link[PGRdup]{ProbDup}}
 }
-

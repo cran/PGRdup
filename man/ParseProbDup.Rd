@@ -78,4 +78,3 @@ GNdupParsed <- ParseProbDup(GNdup)
 \seealso{
 \code{\link[PGRdup]{ProbDup}},
 }
-

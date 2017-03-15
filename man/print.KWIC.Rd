@@ -19,4 +19,3 @@ keywords and the number of distinct keywords in the index.
 \seealso{
 \code{\link[PGRdup]{KWIC}}
 }
-

@@ -56,6 +56,7 @@ metastring;
 
 
 void DoubleMetaphone(char *str, char **codes,char **codes1);
+void fdouble_metaphone(char** p_input, char** p1_output, char** p2_output, int* tot_length);
 
 
 #endif /* DOUBLE_METAPHONE__H */

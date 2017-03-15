@@ -90,4 +90,3 @@ lapply(disGNdup2, nrow)
 \seealso{
 \code{\link[PGRdup]{ProbDup}}
 }
-

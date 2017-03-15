@@ -81,4 +81,3 @@ names <- MergeSuffix(names, y3, delim = c("space", "dash", "period"))
 \code{\link[PGRdup]{DataClean}}, \code{\link[PGRdup]{KWIC}}, 
   \code{\link[PGRdup]{ProbDup}}
 }
-

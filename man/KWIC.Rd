@@ -83,4 +83,3 @@ Knupffer, H. (1988). The European Barley Database of the ECP/GR:
 \code{\link[data.table]{data.table}},
   \code{\link[PGRdup]{print.KWIC}}
 }
-

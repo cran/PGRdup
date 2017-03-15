@@ -155,4 +155,3 @@ grid.arrange(GNdupcView$SummaryGrob)
   \code{\link[PGRdup]{DataClean}}, \code{\link[ggplot2]{ggplot}}, 
   \code{\link[gridExtra]{gridExtra-package}}
 }
-

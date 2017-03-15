@@ -1,3 +1,10 @@
+PGRdup 0.2.3.1
+---------------------------------------
+###OTHER NOTES:
+ - Registered native routines in the C code for `DoubleMetaphone`.
+
+***
+
 PGRdup 0.2.3
 ---------------------------------------
 ###UPDATED FUNCTIONS:

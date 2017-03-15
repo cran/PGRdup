@@ -64,4 +64,3 @@ text(bp, 0, table(GNKWCouts$COUNT),cex=1,pos=3)
 \seealso{
 \code{\link[stringi]{stri_count}}
 }
-

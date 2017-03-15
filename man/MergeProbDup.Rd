@@ -69,4 +69,3 @@ GNdupMerged <- MergeProbDup(GNdupSplit[[1]], GNdupSplit[[3]])
 \seealso{
 \code{\link[PGRdup]{ProbDup}}, \code{\link[PGRdup]{SplitProbDup}}
 }
-

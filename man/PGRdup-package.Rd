@@ -2,8 +2,8 @@
 % Please edit documentation in R/PGRdup-package.R
 \docType{package}
 \name{PGRdup-package}
-\alias{PGRdup}
 \alias{PGRdup-package}
+\alias{PGRdup}
 \title{The PGRdup Package}
 \description{
 Functions to facilitate genebank managers in the identification of probable 
@@ -16,4 +16,3 @@ J Aravind \email{aravindj@nbpgr.ernet.in} \cr J Radhamani
   \email{anandasubhash@gmail.com} \cr RK Tyagi
   \email{rktyagi@nbpgr.ernet.in}
 }
-

@@ -289,4 +289,3 @@ van der Loo, M. P. J. (2014). The \code{stringdist} Package for
   \code{\link[stringdist]{stringdistmatrix}}, \code{\link[utils]{adist}}, 
   \code{\link[PGRdup]{print.ProbDup}}
 }
-

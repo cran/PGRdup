@@ -43,4 +43,3 @@ archive to console, if required.
 \seealso{
 \code{\link[data.table]{data.table}}
 }
-

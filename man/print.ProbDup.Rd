@@ -20,4 +20,3 @@ kind along with the corresponding number of records.
 \seealso{
 \code{\link[PGRdup]{ProbDup}}
 }
-

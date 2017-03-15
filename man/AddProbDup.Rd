@@ -100,4 +100,3 @@ GNwithdup <-  AddProbDup(pdup = GNdup, db = GN1000, addto = "I")
 \code{\link[PGRdup]{DataClean}}, \code{\link[PGRdup]{KWIC}},
   \code{\link[PGRdup]{ProbDup}}
 }
-

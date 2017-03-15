@@ -35,6 +35,7 @@ In case of non-ASCII characters in strings, a warning is issued.
   \href{https://github.com/gitpan/Text-DoubleMetaphone/blob/master/README}{license
    information}.
 }
+
 \examples{
 # Return the primary and secondary Double Metaphone encodings for a character vector.
 str1 <- c("Jyothi", "Jyoti")
@@ -54,4 +55,3 @@ Philips, L. (2000). The double metaphone search algorithm. C/C++
 \code{\link[stringdist]{phonetic}},
   \code{\link[RecordLinkage]{phonetics}}
 }
-

@@ -68,4 +68,3 @@ GNdupSplit <- SplitProbDup(GNdup, splitat = c(10, 10, 10))
 \seealso{
 \code{\link[PGRdup]{ProbDup}}, \code{\link[PGRdup]{MergeProbDup}}
 }
-
