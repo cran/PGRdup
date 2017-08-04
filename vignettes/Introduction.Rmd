@@ -6,7 +6,7 @@ date: '`r Sys.Date()`'
 output:
   pdf_document:
     dev: cairo_pdf
-  html_document: default
+    fig_caption: false
 header-includes:
 - \usepackage{fancyhdr}
 - \pagestyle{fancy}
@@ -27,6 +27,13 @@ vignette: |
 1. ICAR-National Bureau of Plant Genetic Resources, New Delhi, India
 2. Centre for Development of Advanced Computing, Thiruvananthapuram, Kerala, India
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  comment = "",
+  fig.cap= ""
+)
+```
+
 \tableofcontents
 
 ##Introduction
@@ -38,9 +45,9 @@ The functions in this package are primarily built using the `R` packages [`data.
 
 \pagebreak
 
-![PGRdup](imgs/PGRdup.png)
+![](imgs/PGRdup.png)
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, fig.cap = NULL}
 if("diagram" %in% rownames(installed.packages())) {
   suppressMessages(library(diagram))
   
@@ -57,7 +64,7 @@ if("diagram" %in% rownames(installed.packages())) {
   elpos[16,2] <- elpos[16,2] + 0.0250
   elpos[17,2] <- elpos[17,2] + 0.0250
   elpos[18,2] <- elpos[18,2] + 0.0250
-  
+
   t <- as.data.frame(elpos)
   t[t$V1<0.5,][,1] <- t[t$V1<0.5,][,1] + 0.1
   t[t$V1>0.5,][,1] <- t[t$V1>0.5,][,1] - 0.1
@@ -74,12 +81,12 @@ if("diagram" %in% rownames(installed.packages())) {
   
   #text(elpos, lab = as.character(c(1:18)), cex = 2)
   
-  textrect(c(0.5,0.5), radx = 0.35, rady = 0.48, lab = "" , box.col = "ivory", shadow.size=0)
+  textrect(c(0.5,0.49), radx = 0.35, rady = 0.49, lab = "" , box.col = "ivory", shadow.size=0)
   textrect(c(0.5,0.9375), radx = 0.35, rady = 0.045, lab = "" , box.col = "tan2", shadow.size=0, lcol="transparent")
   textrect(c(0.5,0.2075), radx = 0.35, rady = 0.045, lab = "" , box.col = "tan2", shadow.size=0, lcol="transparent")
   textrect(c(0.5,0.6865), radx = 0.35, rady = 0.05, lab = "" , box.col = "wheat2", shadow.size=0, lcol="transparent")
   textrect(c(0.5,0.3115), radx = 0.35, rady = 0.065, lab = "" , box.col = "wheat2", shadow.size=0, lcol="transparent")
-  textrect(c(0.5,0.5), radx = 0.35, rady = 0.48, lab = "" , box.col = "transparent", shadow.size=0)
+  textrect(c(0.5,0.49), radx = 0.35, rady = 0.49, lab = "" , box.col = "transparent", shadow.size=0)
   
   for (i in 1:dim(elpos1)[1]-1) {
     straightarrow(to = elpos1[i+1, ],
@@ -124,9 +131,9 @@ if("diagram" %in% rownames(installed.packages())) {
   elposfunc[-c(5),][,1] <- elposfunc[-c(5),][,1] - 0.06
   func <- c("DataClean\nMergeKW\nMergePrefix\nMergeSuffix",
             "KWIC", "ProbDup", "DisProbDup\nReviewProbDup\nReconstructProbDup",
-            "ValidatePrimKey\nDoubleMetaphone\nKWCounts",
+            "read.genesys\nValidatePrimKey\nDoubleMetaphone\nKWCounts",
             "ParseProbDup\nSplitProbDup\nMergeProbDup",
-            "AddProbDup\nViewProbDup")
+            "AddProbDup\nViewProbDup\nprint.KWIC\nprint.ProbDup")
   for (i in 1:dim(elposfunc)[1]){
     textplain(elposfunc[i,], lab = func[i], cex = 0.7, adj=c(0, 0.5), font=1, family = "sans", col="steelblue4")
   }
@@ -137,11 +144,43 @@ if("diagram" %in% rownames(installed.packages())) {
 
 **Fig. 1.** PGRdup workflow and associated functions
 
-##Installation
-The package can be installed using the following function:
-```{r, eval=FALSE}
-install.packages('PGRdup', dependencies=TRUE)
+##Version History
+The current version of the package is `r getNamespaceVersion("PGRdup")`. The previous versions are as follows.
+
+**Table 1.** Version history of `PGRdup` `R` package.
+
+```{r, echo=FALSE, message=FALSE}
+library(XML)
+pkg <- "PGRdup"
+link <- paste0("http://cran.r-project.org/src/contrib/Archive/", pkg)
+
+VerHistory <- readHTMLTable(link)[[1]][,2:3]
+colnames(VerHistory) <- c("Version", "Date")
+VerHistory <- VerHistory[VerHistory$Version != "Parent Directory",]
+VerHistory <- VerHistory[!is.na(VerHistory$Version), ]
+VerHistory$Date <- as.Date(VerHistory$Date)
+VerHistory$Version <- gsub("PGRdup_", "", VerHistory$Version)
+VerHistory$Version <- gsub(".tar.gz", "", VerHistory$Version)
+
+VerHistory <- VerHistory[order(VerHistory$Date), c("Version", "Date")]
+rownames(VerHistory) <- NULL
+
+knitr::kable(VerHistory)
 ```
+
+To know detailed history of changes use `news(package='PGRdup')`.
+
+\pagebreak
+
+##Installation
+The package can be installed using the following functions:
+
+```{r, eval=FALSE}
+# Install from CRAN
+install.packages('PGRdup', dependencies=TRUE)
+
+```
+
 Uninstalled dependencies (packages which `PGRdup` depends on *viz*- [`data.table`](https://cran.r-project.org/web/packages/data.table/index.html), [`igraph`](https://cran.r-project.org/web/packages/igraph/index.html), [`stringdist`](https://cran.r-project.org/web/packages/stringdist/index.html) and [`stringi`](https://cran.r-project.org/web/packages/stringi/index.html)) are also installed because of the argument `dependencies=TRUE`.
 
 Then the package can be loaded using the function
@@ -161,11 +200,11 @@ class(GN1000)
 head(GN1000)
 ```
 
-If the passport data exists as an excel sheet, it can be first converted to a csv or tab delimited format and then easily loaded to the `R` environment using the functions `read.csv` and `read.table` respectively. Alternatively, the package [`readxl`](https://cran.r-project.org/web/packages/readxl/index.html) can be used to directly read the data from excel. In case of large csv files, the function `fread` in the [`data.table`](https://cran.r-project.org/web/packages/data.table/index.html) package can be used to rapidly load the data.
+If the passport data exists as an excel sheet, it can be first converted to a comma-separated values (csv) file or tab delimited file and then easily imported into the `R` environment using the base functions `read.csv` and `read.table` respectively. Similarly `read_csv()` and `read_tsv()` from the [`readr`](https://cran.r-project.org/web/packages/readr/index.html) package can also be used. Alternatively, the package [`readxl`](https://cran.r-project.org/web/packages/readxl/index.html) can be used to directly read the data from excel. In case of large csv files, the function `fread` in the [`data.table`](https://cran.r-project.org/web/packages/data.table/index.html) package can be used to rapidly load the data.
 
-If the PGR passport data is in a DBMS, the required table can be imported as a data frame into `R`. using the appropriate [`R`-database interface package](http://www.burns-stat.com/r-database-interfaces/). For example [`dbConnect`](https://cran.r-project.org/web/packages/dbConnect/index.html) for MySQL, [`ROracle`](https://cran.r-project.org/web/packages/ROracle/index.html) for Oracle etc.
+If the PGR passport data is in a database management system (DBMS), the required table can be imported as a data frame into `R`. using the appropriate [`R`-database interface package](http://www.burns-stat.com/r-database-interfaces/). For example [`dbConnect`](https://cran.r-project.org/web/packages/dbConnect/index.html) for MySQL, [`ROracle`](https://cran.r-project.org/web/packages/ROracle/index.html) for Oracle etc.
 
-The PGR data downloaded from [genesys](https://www.genesys-pgr.org/welcome) database as a [Darwin Core - Germplasm](https://github.com/dagendresen/darwincore-germplasm) zip archive can be imported into the `R` environment as a flat file `data.frame` using the `read.genesys` function.
+The PGR data downloaded from the [genesys](https://www.genesys-pgr.org/welcome) database as a [Darwin Core - Germplasm](https://github.com/dagendresen/darwincore-germplasm) zip archive can be imported into the `R` environment as a flat file `data.frame` using the `read.genesys` function.
 
 ```{r, eval=FALSE}
 # Import the DwC-Germplasm zip archive "genesys-accessions-filtered.zip"
@@ -220,7 +259,7 @@ DataClean(x, fix.comma=FALSE, fix.semcol=FALSE, fix.col=FALSE,
           fix.sep=FALSE, fix.leadzero=FALSE)
 ```
 
-`fix.sep` can be used to merge together accession identifiers composed of alphabetic characters separated from as series of digits by a space character.
+`fix.sep` can be used to merge together accession identifiers composed of alphabetic characters separated from a series of digits by a space character.
 ```{r}
 x <- c("NCAC 18078", "AH 6481", "ICG 2791")
 x
@@ -257,7 +296,7 @@ DataClean(names)
 # knitr::kable(DC)
 ```
 
-**Table 1.** Data pre-processing using `DataClean`.
+**Table 2.** Data pre-processing using `DataClean`.
 
 |**names**          |**DataClean(names)** |
 |:------------------|:--------------------|
@@ -291,7 +330,7 @@ y1 <- list(c("Gujarat", "Dwarf"), c("Castle", "Cary"), c("Small", "Japan"),
 names <- MergeKW(names, y1, delim = c("space", "dash", "period"))
 
 # Merge prefix strings
-y2 <- c("Light", "Small", "Improved", "Punjab", "SAM")
+y2 <- c("Light", "Small", "Improved", "Punjab", "SAM", "Dark")
 names <- MergePrefix(names, y2, delim = c("space", "dash", "period"))
 
 # Merge suffix strings
@@ -358,14 +397,14 @@ GN[GNfields] <- lapply(GN[GNfields],
                        function(x) MergeSuffix(x, y3, delim = c("space", "dash")))
 
 # Generate the KWIC index
-GNKWIC <- KWIC(GN, GNfields, min.freq=1)
+GNKWIC <- KWIC(GN, GNfields, min.freq = 1)
 class(GNKWIC)
 GNKWIC
 
 # Retrieve the KWIC index from the KWIC object
 KWIC <- GNKWIC[[1]]
-KWIC <- KWIC[order(KWIC$KEYWORD, decreasing=TRUE),]
-head(KWIC[,c("PRIM_ID", "KWIC_L", "KWIC_KW", "KWIC_R")], n=10)
+KWIC <- KWIC[order(KWIC$KEYWORD, decreasing = TRUE),]
+head(KWIC[,c("PRIM_ID", "KWIC_L", "KWIC_KW", "KWIC_R")], n = 10)
 
 # Retrieve the keyword frequencies from the KWIC object
 KeywordFreq <- GNKWIC[[2]]
@@ -373,14 +412,17 @@ head(KeywordFreq)
 ```
 
 
-```{r, echo=FALSE, warning=FALSE, fig.height = 4}
+```{r, echo=FALSE, warning=FALSE, fig.height = 4, eval=TRUE}
 # Plot wordcloud of keyword frequencies
-if("diagram" %in% rownames(installed.packages())) {
+if ("wordcloud" %in% rownames(installed.packages())) {
   suppressMessages(library(wordcloud))
   par(mar = c(0,0,0,0))
-  pal <- brewer.pal(8,"Dark2")
-  wordcloud(words=KeywordFreq[,1], freq=KeywordFreq[,2], min.freq=4,
-            colors=pal, random.order = F, rot.per=0, fixed.asp = F)
+  # pal <- brewer.pal(8,"Dark2")
+  pal <- c("#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02",
+           "#A6761D", "#666666")
+  wordcloud(words = KeywordFreq[,1], freq = KeywordFreq[,2], min.freq = 4,
+            colors = pal, random.order = FALSE, rot.per = 0,
+            fixed.asp = FALSE)
 } else {
   print("package 'wordcloud' is required to generate this figure")
 }
@@ -390,6 +432,7 @@ if("diagram" %in% rownames(installed.packages())) {
 **Fig. 2.** Word cloud of keywords retrieved
 
 The function will throw an error in case of duplicates or NULL values in the primary key/ID field mentioned.
+
 ```{r}
 GN <- GN1000
 GN[GNfields] <- lapply(GN[GNfields], function(x) DataClean(x))
@@ -419,11 +462,11 @@ The erroneous records can be identified using the helper function `ValidatePrimK
 
 ```{r, message=FALSE}
 # Validate the primary key/ID field for duplication or existence of NULL values
-ValidatePrimKey(x=GN, prim.key="NationalID")
+ValidatePrimKey(x = GN, prim.key = "NationalID")
 # Remove the offending records
 GN <- GN[-c(1001:1005), ]
 # Validate again
-ValidatePrimKey(x=GN, prim.key="NationalID")
+ValidatePrimKey(x = GN, prim.key = "NationalID")
 ```
 
 ##Retrieval of Probable Duplicate Sets
@@ -461,8 +504,6 @@ GN[GNfields] <- lapply(GN[GNfields],
 # Generate the KWIC index
 GNKWIC <- KWIC(GN, GNfields)
 ```
-
-\pagebreak
 
 ```{r}
 # Specify the exceptions as a vector
@@ -559,7 +600,7 @@ GNdupc
 
 ### Matching Strategies
 
-1. **Fuzzy matching** or approximate string matching of keywords is carried out by computing the [generalized levenshtein (edit) distance](https://en.wikipedia.org/wiki/Levenshtein_distance) between them. This distance measure counts the number of deletions, insertions and substitutions necessary to turn one string to the another.
+1. **Fuzzy matching** or approximate string matching of keywords is carried out by computing the [generalized levenshtein (edit) distance](https://en.wikipedia.org/wiki/Levenshtein_distance) between them. This distance measure counts the number of deletions, insertions and substitutions necessary to turn one string to another.
 
 ```{r}
 # Load example dataset
@@ -661,7 +702,7 @@ GNdup <- ProbDup(kwic1 = GNKWIC, method = "a", excep = exep,
 GNdup
 ```
 
-3. **Semantic matching** matches keywords based on a list of accession name synonyms supplied as list with character vectors of synonym sets (synsets) to the `syn` argument. Synonyms in this context refers to interchangeable identifiers or names by which an accession is recognized. Multiple keywords specified as members of the same synset in `syn` are matched. To facilitate accurate identification of synonyms from the KWIC index, identical data standardization operations using the `Merge*` and `DataClean` functions for both the original database fields and the synset list are recommended.
+3. **Semantic matching** matches keywords based on a list of accession name synonyms supplied as list with character vectors of synonym sets (synsets) to the `syn` argument. Synonyms in this context refer to interchangeable identifiers or names by which an accession is recognized. Multiple keywords specified as members of the same synset in `syn` are matched. To facilitate accurate identification of synonyms from the KWIC index, identical data standardization operations using the `Merge*` and `DataClean` functions for both the original database fields and the synset list are recommended.
 
 ```{r}
 # Specify the synsets as a list
@@ -780,7 +821,7 @@ legend("topright", c("t1 : chunksize = 1000,\n     useBytes = T (default)\n",
 **Fig. 3.** CPU time with different `ProbDup` arguments estimated using the `microbenchmark` package.
 
 ##Set Review, Modification and Validation
-The initially retrieved sets may be intersecting with each other because there might exist accessions which occur in more than duplicate set. Disjoint sets can be generated by merging such overlapping sets using the function `DisProbDup`.
+The initially retrieved sets may be intersecting with each other because there might be accessions which occur in more than duplicate set. Disjoint sets can be generated by merging such overlapping sets using the function `DisProbDup`.
 
 Disjoint sets are retrieved either individually for each type of probable duplicate sets or considering all type of sets simultaneously. In case of the latter, the disjoint of all the type of sets alone are returned in the output as an additional data frame `DisjointDupicates` in an object of class `ProbDup`.
 
@@ -870,8 +911,6 @@ RevGNdup <- ReviewProbDup(pdup = disGNdup1, db1 = GN1000,
                           max.count = 30, insert.blanks = TRUE)
 ```
 
-\pagebreak
-
 ```{r}
 head(RevGNdup)
 ```
@@ -907,7 +946,7 @@ disGNdup1
 GNdup2
 ```
 
-##Other functions
+##Other Functions
 The `ProbDup` object is a list of data frames of different kinds of probable duplicate sets _viz_- `FuzzyDuplicates`, `PhoneticDuplicates`, `SemanticDuplicates` and `DisjointDuplicates`. Each row of the component data frame will have information of a set, the type of set, the set members as well as the keywords based on which the set was formed. This data can be reshaped into long form using the function `ParseProbDup`. This function which will transform a `ProbDup` object into a single data frame.
 
 ```{r}
@@ -1049,7 +1088,9 @@ exep <- c("A", "B", "BIG", "BOLD", "BUNCH", "C", "COMPANY", "CULTURE",
 
 # Specify the synsets as a list
 syn <- list(c("CHANDRA", "AH114"), c("TG1", "VIKRAM"))
+```
 
+```{r}
 GNdupc <- ProbDup(kwic1 = GN1KWIC, kwic2 = GN2KWIC, method = "c",
                   excep = exep, fuzzy = TRUE, phonetic = TRUE,
                   encoding = "primary", semantic = TRUE, syn = syn)
@@ -1058,7 +1099,6 @@ GNdupc <- ProbDup(kwic1 = GN1KWIC, kwic2 = GN2KWIC, method = "c",
 GNdupcView <- ViewProbDup(GNdupc, GN1, GN2, "SourceCountry", "SourceCountry",
                          max.count = 30, select = c("INDIA", "USA"), order = "type",
                          main = "Groundnut Probable Duplicates")
-
 ```
 
 ```{r, eval = FALSE}
@@ -1074,8 +1114,6 @@ grid.arrange(GNdupcView[[3]])
 ```
 
 **Fig. 5.** Summary visualization of groundnut probable duplicate sets retrieved according to `SourceCountry` field.
-
-\pagebreak
 
 The function `KWCounts` can be used to compute the keyword counts from PGR passport database fields(columns) which are considered for identification of probable duplicates. These keyword counts can give a rough indication of the completeness of the data in such fields (Fig.&nbsp;3).
 
@@ -1120,28 +1158,24 @@ citation("PGRdup")
 ```
 
 
-```{r, echo = FALSE}
-message(paste(" To cite the R package 'PGRdup' in publications use:",
-              "   Aravind, J., J. Radhamani, Kalyani Srinivasan, B. Ananda Subhash, ",
-              "   and R. K. Tyagi (2015).  PGRdup: Discover Probable Duplicates in ",
-              "   Plant Genetic Resources Collections. R package version 0.2.1.\n",
-              " A BibTeX entry for LaTeX users is\n",
-              "   @Manual{,",
-              "     title = {PGRdup: Discover Probable Duplicates in Plant Genetic Resources",
-              " Collections},",
-              "     author = {{J. Aravind} and {J. Radhamani} and {Kalyani Srinivasan} and ",
-              " {B. Ananda Subhash} and {R. K. Tyagi}},",
-              "     note = {R package version 0.2.1}",
-              "   }",
-              sep = "\n"))
+```{r, echo = FALSE, collapse = TRUE}
+cit <- citation("PGRdup")
+yr <- format(Sys.Date(), "%Y")
+cit[1]$year <- yr
+oc <- class(cit)
+
+cit <- unclass(cit)
+attr(cit[[1]],"textVersion") <- gsub("\\(\\)",
+                                     paste("\\(", yr, "\\)", sep = ""),
+                                     attr(cit[[1]],"textVersion"))
+class(cit) <- oc
+cit
 ```
 
-##Session info
+##Session Info
 
 ```{r}
 sessionInfo()
 ```
-
-\pagebreak
 
 ##References

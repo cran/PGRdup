@@ -1,7 +1,23 @@
+PGRdup 0.2.3.2
+---------------------------------------
+###UPDATED FUNCTIONS:
+ - `DoubleMetaphone` - Fixed memory leak issues in underlying `C` code.
+ 
+###OTHER NOTES:
+ - Minor corrections in vignette.
+ - Added welcome message.
+ - Added version history to vignette
+ - Replaced all `1:nrow()` and `1:length()` usage in function with `seq_len(nrow())` and `seq_len(length())` respectively.
+ - Added package to github.
+ - Added package documentation website (https://aravind-j.github.io/PGRdup/) as a github page with `pkgdown`.
+ - Added copyright to `Authors@R` along with original contributors for the underlying `C` code for `DoubleMetaphone`.
+
+***
+
 PGRdup 0.2.3.1
 ---------------------------------------
 ###OTHER NOTES:
- - Registered native routines in the C code for `DoubleMetaphone`.
+ - Registered native routines in the `C` code for `DoubleMetaphone`.
 
 ***
 
@@ -29,7 +45,7 @@ PGRdup 0.2.2
 ---------------------------------------
 ###NEW FUNCTIONS:
  - `read.genesys` - Convert 'Darwin Core - Germplasm' zip archive to a flat file.
- - `ViewProbDup` - Visualize the probable duplicate sets retrived in a `ProbDup` object.
+ - `ViewProbDup` - Visualize the probable duplicate sets retrieved in a `ProbDup` object.
 
 ###UPDATED FUNCTIONS:
  - `ReconstructProbDup` - Fixed bug regarding failure to retrieve db2 fields when method "c" is used.
@@ -49,7 +65,7 @@ PGRdup 0.2.1
  - `MergeProbDup` - Merges two objects of class `ProbDup`.
  - `KWCounts` - Generates keyword counts from database fields.
  - `print.KWIC` - Prints summary of an object of class `KWIC` to console.
- - `print.ProbDup` - Pprints summary of an object of class `ProbDup` to console.
+ - `print.ProbDup` - Prints summary of an object of class `ProbDup` to console.
 
 ###UPDATED FUNCTIONS:
  - `ProbDup` - Modified the phonetic matching for better handling of strings with digits.

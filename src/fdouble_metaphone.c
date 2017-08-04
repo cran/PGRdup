@@ -43,18 +43,15 @@ modify it under the same terms as Perl itself.
 
 #include <stdio.h>
 #include <string.h>
-
-
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <assert.h>
+
 #include <R.h>
 #include <Rmath.h>
+
 #include "double_metaphone.h"
-
-
-
 
 
 #ifndef ALLOCATIONS
@@ -65,8 +62,6 @@ modify it under the same terms as Perl itself.
 						  (v = (t*)realloc((v),((n)*sizeof(t))))
 	#define META_FREE(x) free((x))
 #endif
-
-
 
 
 void fdouble_metaphone(char** p_input, char** p1_output, char** p2_output, int* tot_length)
@@ -119,7 +114,8 @@ void IsVowel(metastring * s, int pos, int* answer)
 	
 	*answer = 0;
     if ((pos < 0) || (pos >= s->length))
-		*answer = 0;
+		return;
+		//*answer = 0;
 
     c = *(s->str + pos);
     if ((c == 'A') || (c == 'E') || (c == 'I') || (c =='O') || 
@@ -177,7 +173,8 @@ void StringAt(int* stringata, metastring * s, int start, int length, ...)
     va_list ap;
 	*stringata =  0;//-------------------------------------------------->
     if ((start < 0) || (start >= s->length))
-        *stringata =  0;
+		return;
+        //*stringata =  0;
 
     pos = (s->str + start);
     va_start(ap, length);
@@ -204,7 +201,7 @@ void MetaphAdd(metastring * s, char *new_str)
 	return;
 
     add_length = strlen(new_str);
-    if ((s->length + add_length) > (s->bufsize - 1))
+    if (((s->length + add_length) - (s->bufsize - 1))>0)
       {
 	  IncreaseBuffer(s, add_length);
       }
@@ -224,8 +221,8 @@ void DoubleMetaphone(char *str, char **codes,char **codes1)
     int        last;
 		int answer;
 		int answer2;
-		char getata;
-		char getata1;
+		char getata = 0;
+		char getata1 = 0;
 		int stringata;
 		int stringata1;
 		int stringata2;
@@ -282,8 +279,8 @@ void DoubleMetaphone(char *str, char **codes,char **codes1)
     META_MALLOC(primary, 1, metastring);
     assert( primary != NULL );
 
-    if (test_string == ((void *)0))
-			strcpy(test_string,"");
+    //if (test_string == ((void *)0))
+	//		strcpy(test_string,"");
     primary->length  = strlen(test_string);
     /* preallocate a bit more for potential growth */
     primary->bufsize = primary->length + 7;
@@ -291,7 +288,8 @@ void DoubleMetaphone(char *str, char **codes,char **codes1)
     META_MALLOC(primary->str, primary->bufsize, char);
     assert( primary->str != NULL );
     
-    strncpy(primary->str, test_string, primary->length + 1);
+	strcpy(primary->str,"");
+    //strncpy(primary->str, test_string, primary->length + 1);
     primary->free_string_on_destroy = 1; 
     
     
@@ -301,8 +299,8 @@ void DoubleMetaphone(char *str, char **codes,char **codes1)
     META_MALLOC(secondary, 1, metastring);
     assert( secondary != NULL );
 
-    if (test_string == ((void *)0))
-			strcpy(test_string,"");
+    //if (test_string == ((void *)0))
+	//		strcpy(test_string,"");
     secondary->length  = strlen(test_string);
     /* preallocate a bit more for potential growth */
     secondary->bufsize = secondary->length + 7;
@@ -310,7 +308,8 @@ void DoubleMetaphone(char *str, char **codes,char **codes1)
     META_MALLOC(secondary->str, secondary->bufsize, char);
     assert( secondary->str != NULL );
     
-    strncpy(secondary->str, test_string, secondary->length + 1);
+	strcpy(secondary->str,"");
+    //strncpy(secondary->str, test_string, secondary->length + 1);
     secondary->free_string_on_destroy = 1; 
     
     
@@ -333,10 +332,10 @@ void DoubleMetaphone(char *str, char **codes,char **codes1)
     
     
     
-    primary->free_string_on_destroy = 0;
-    secondary->free_string_on_destroy = 0;
+    //primary->free_string_on_destroy = 0;
+    //secondary->free_string_on_destroy = 0;
 
-    MakeUpper(original);
+    MakeUpper(original);  
 
     /* skip these when at start of word */
     StringAt(&stringata,original, 0, 2, "GN", "KN", "PN", "WR", "PS", "");
@@ -1438,9 +1437,12 @@ void DoubleMetaphone(char *str, char **codes,char **codes1)
     if (secondary->length > 4)
 	SetAt(secondary, 4, '\0');
 
-    *codes = primary->str;
-    *codes1 = secondary->str;
+    //*codes = primary->str;
+    //*codes1 = secondary->str;
 
+    strcpy(*codes,primary->str);
+    strcpy(*codes1,secondary->str);
+	
     DestroyMetaString(original);
     DestroyMetaString(primary);
     DestroyMetaString(secondary);

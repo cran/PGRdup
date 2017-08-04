@@ -40,6 +40,13 @@ matching operations to identify probable duplicates with
 The argument \code{readme} can be used to print the readme file in the 
 archive to console, if required.
 }
+\examples{
+\dontrun{
+# Import the DwC-Germplasm zip archive "genesys-accessions-filtered.zip"
+PGRgenesys <- read.genesys("genesys-accessions-filtered.zip",
+                           scrub.names.space = TRUE, readme = TRUE)
+}
+}
 \seealso{
 \code{\link[data.table]{data.table}}
 }

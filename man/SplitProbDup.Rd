@@ -14,7 +14,7 @@ Fuzzy, Phonetic and Semantic duplicate sets in \code{pdup} are to be split.}
 }
 \value{
 A list with the the divided objects of class \code{ProbDup} 
-  (\code{pdup1} and \code{pdup2}) along with the corrsponding lists of
+  (\code{pdup1} and \code{pdup2}) along with the corresponding lists of
   accessions present in each (\code{list1} and \code{list2}).
 }
 \description{

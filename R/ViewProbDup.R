@@ -359,7 +359,7 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
     rm(orp2)
   }
   ndupsets <- sum(unlist(sapply(pdup, function(x) dim(x)[1]))) # Add set numbers
-  orps[, SET_NO := 1:nrow(orps) + ndupsets]
+  orps[, SET_NO := seq_len(nrow(orps)) + ndupsets]
   orps[!FACTOR %in% select, FACTOR := "Others"]
   orps[, FACTOR := as.factor(FACTOR)]
   orps <- orps[order(SET_NO), as.list(table(FACTOR)),
@@ -408,7 +408,7 @@ ViewProbDup <- function(pdup, db1, db2 = NULL,
                                   to = max(as.numeric(summ$KIND)) + 0.5,
                                   by = 1),
                         col = 0)
-  shading[which(seq(1:nrow(shading)) %% 2 == 1), ]$col <- 1
+  shading[which(seq(seq_len(nrow(shading))) %% 2 == 1), ]$col <- 1
   shading$col <- ifelse(shading$col, "gray83", "gray93")
   #Stacked bar
   sbar <- melt(summ, id.vars = "KIND", measure.vars = Nfactorlevels)

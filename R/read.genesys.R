@@ -43,6 +43,12 @@
 #' @param readme logical. If \code{TRUE}, the genesys zip file readme is printed
 #'   to console.
 #' @return A data.frame with the flat file form of the genesys data.
+#' @examples
+#' \dontrun{
+#' # Import the DwC-Germplasm zip archive "genesys-accessions-filtered.zip"
+#' PGRgenesys <- read.genesys("genesys-accessions-filtered.zip",
+#'                            scrub.names.space = TRUE, readme = TRUE)
+#' }
 #' @seealso \code{\link[data.table]{data.table}}
 #' 
 #' @import data.table

@@ -21,18 +21,20 @@
 #' 
 #' \code{DoubleMetaphone} converts strings to double metaphone phonetic codes.
 #' 
-#' An implementation of the Double Metaphone phonetic algorithm in \code{R}. The
-#' presence of non-ASCII characters is detected and indicated as a warning.
+#' An implementation of the Double Metaphone phonetic algorithm in \code{R}. If 
+#' non-ASCII characters encountered in the input character vector \code{str}, a 
+#' warning is issued and they are transliterated so that the accented characters
+#' are converted to their ASCII unaccented versions.
 #' 
 #' @param str A character vector whose strings are to be encoded by double 
 #'   metaphone algorithm.
-#' @return Returns a list with two character vectors of the same length as the
-#'   input vector. The first character vector contains the primary double
+#' @return Returns a list with two character vectors of the same length as the 
+#'   input vector. The first character vector contains the primary double 
 #'   metaphone encodings, while the second character vector contains the 
 #'   alternate encodings.
-#' @seealso \code{\link[stringdist]{phonetic}},
+#' @seealso \code{\link[stringdist]{phonetic}}, 
 #'   \code{\link[RecordLinkage]{phonetics}}
-#' @section Acknowledgement: The \code{C} code for the double metaphone
+#' @section Acknowledgement: The \code{C} code for the double metaphone 
 #'   algorithm was adapted from Maurice Aubrey's perl module hosted at the 
 #'   \strong{gitpan/Text-DoubleMetaphone} 
 #'   \href{https://github.com/gitpan/Text-DoubleMetaphone/blob/master/double_metaphone.c}{public
@@ -41,7 +43,8 @@
 #'    information}.
 #' @references Philips, L. (2000). The double metaphone search algorithm. C/C++ 
 #'   users journal, 18(6), 38-43.
-#' @note In case of non-ASCII characters in strings, a warning is issued.
+#' @note In case of non-ASCII characters in strings, a warning is issued and 
+#'   accented characters are converted to their ASCII unaccented versions.
 #' @examples
 #' # Return the primary and secondary Double Metaphone encodings for a character vector.
 #' str1 <- c("Jyothi", "Jyoti")
@@ -65,9 +68,11 @@ DoubleMetaphone <- function(str) {
     warning("Non-ASCII characters were encountered.")
   }
   out <- .C("fdouble_metaphone", as.character(str),
-            primary = character(length(str)),
-            alternate = character(length(str)),
+            primary =  as.character(str),
+            alternate =  as.character(str),
             len = length(str), PACKAGE = "PGRdup")
   out <- out[2:3]
   return(out)
 }
+
+# character(length(str))

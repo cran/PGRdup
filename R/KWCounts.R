@@ -110,7 +110,7 @@ KWCounts <- function(x, fields, excep) {
     x[, `:=`(fields[-1], lapply(.SD, function(x) gsub(paste0(excep,
                                                              collapse = "|"), "", x))), .SDcols = fields[-1]]
   } else {
-    iter <- rep(1:length(excep), each = 100, length.out = length(excep))
+    iter <- rep(seq_len(length(excep)), each = 100, length.out = seq_len(length(excep)))
     for (i in unique(iter)) {
       in_iter <- iter == i
       x[, `:=`(fields[-1], lapply(.SD, function(x) gsub(paste0(excep[in_iter],

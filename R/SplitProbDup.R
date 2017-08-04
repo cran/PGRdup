@@ -24,7 +24,7 @@
 #' @param splitat A vector of 3 integers indicating the set count at which 
 #'   Fuzzy, Phonetic and Semantic duplicate sets in \code{pdup} are to be split.
 #' @return A list with the the divided objects of class \code{ProbDup} 
-#'   (\code{pdup1} and \code{pdup2}) along with the corrsponding lists of
+#'   (\code{pdup1} and \code{pdup2}) along with the corresponding lists of
 #'   accessions present in each (\code{list1} and \code{list2}).
 #' @seealso \code{\link[PGRdup]{ProbDup}}, \code{\link[PGRdup]{MergeProbDup}}
 #' @examples
