@@ -1,11 +1,12 @@
 Package: PGRdup
 Title: Discover Probable Duplicates in Plant Genetic Resources
         Collections
-Version: 0.2.3.2
+Version: 0.2.3.3
 Authors@R: c(
     person(c("J.", "Aravind"),
     email = "j.aravind@icar.gov.in",
-    role = c("aut", "cre")),
+    role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0002-4791-442X")),
     person(c("J.", "Radhamani"),
     email = "jalli.radhamani@icar.gov.in",
     role = "aut"),
@@ -22,11 +23,14 @@ Authors@R: c(
     role = "cph"),
     person(c("Maurice", "Aubrey"),
     email = "maurice@hevanet.com",
+    comment = "Double Metaphone",
     role = "ctb"),
     person(c("Kevin", "Atkinson"),
     email = "kevina@users.sourceforge.net",
+    comment = "Double Metaphone",
     role = "ctb"),
     person(c("Lawrence", "Philips"),
+    comment = "Double Metaphone",
     role = "ctb"))
 Description: Provides functions to aid the identification of probable/possible
     duplicates in Plant Genetic Resources (PGR) collections using
@@ -39,24 +43,29 @@ Depends: R (>= 3.0.2)
 Imports: data.table (>= 1.9.3), igraph, stringdist (>= 0.9.4), stringi,
         ggplot2, grid, gridExtra, methods, utils, stats
 Suggests: diagram, wordcloud, microbenchmark, XML, knitr, rmarkdown
-Copyright: 2014-2017, ICAR-NBPGR
+Copyright: 2014-2018, ICAR-NBPGR
 License: GPL-2 | GPL-3
+Encoding: latin1
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
-URL: https://github.com/aravind-j/PGRdup
+URL: https://cran.r-project.org/package=PGRdup,
+        https://github.com/aravind-j/PGRdup,
+        https://doi.org/10.5281/zenodo.841963,
+        https://aravind-j.github.io/PGRdup/,
+        https://www.rdocumentation.org/packages/PGRdup
 BugReports: https://github.com/aravind-j/PGRdup/issues
 NeedsCompilation: yes
-Packaged: 2017-08-04 15:05:33 UTC; J. Aravind
-Author: J. Aravind [aut, cre],
+Packaged: 2018-01-13 06:10:56 UTC; J. Aravind
+Author: J. Aravind [aut, cre] (0000-0002-4791-442X),
   J. Radhamani [aut],
   Kalyani Srinivasan [aut],
   B. Ananda Subhash [aut],
   R. K. Tyagi [aut],
   ICAR-NBGPR [cph],
-  Maurice Aubrey [ctb],
-  Kevin Atkinson [ctb],
-  Lawrence Philips [ctb]
+  Maurice Aubrey [ctb] (Double Metaphone),
+  Kevin Atkinson [ctb] (Double Metaphone),
+  Lawrence Philips [ctb] (Double Metaphone)
 Maintainer: J. Aravind <j.aravind@icar.gov.in>
 Repository: CRAN
-Date/Publication: 2017-08-04 23:39:28 UTC
+Date/Publication: 2018-01-13 06:21:29 UTC
