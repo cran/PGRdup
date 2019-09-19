@@ -3,13 +3,13 @@
 \encoding{UTF-8}
 \name{ProbDup}
 \alias{ProbDup}
-\title{Identify Probable Duplicates of Accessions}
+\title{Identify probable duplicates of accessions}
 \usage{
 ProbDup(kwic1, kwic2 = NULL, method = c("a", "b", "c"), excep = NULL,
   chunksize = 1000, useBytes = TRUE, fuzzy = TRUE, max.dist = 3,
-  force.exact = TRUE, max.alpha = 4, max.digit = Inf, phonetic = TRUE,
-  encoding = c("primary", "alternate"), phon.min.alpha = 5, min.enc = 3,
-  semantic = FALSE, syn = NULL)
+  force.exact = TRUE, max.alpha = 4, max.digit = Inf,
+  phonetic = TRUE, encoding = c("primary", "alternate"),
+  phon.min.alpha = 5, min.enc = 3, semantic = FALSE, syn = NULL)
 }
 \arguments{
 \item{kwic1}{An object of class \code{KWIC}.}
