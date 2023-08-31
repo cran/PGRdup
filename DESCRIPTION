@@ -1,7 +1,7 @@
 Package: PGRdup
 Title: Discover Probable Duplicates in Plant Genetic Resources
         Collections
-Version: 0.2.3.8
+Version: 0.2.3.9
 Authors@R: c(
     person(given = "J.", family = "Aravind",
            email = "j.aravind@icar.gov.in",
@@ -58,7 +58,7 @@ URL: https://cran.r-project.org/package=PGRdup,
         https://www.rdocumentation.org/packages/PGRdup
 BugReports: https://github.com/aravind-j/PGRdup/issues
 NeedsCompilation: yes
-Packaged: 2023-05-23 05:10:17 UTC; Aravind-DGC
+Packaged: 2023-08-31 17:00:05 UTC; J. Aravind
 Author: J. Aravind [aut, cre] (<https://orcid.org/0000-0002-4791-442X>),
   J. Radhamani [aut],
   Kalyani Srinivasan [aut],
@@ -70,4 +70,4 @@ Author: J. Aravind [aut, cre] (<https://orcid.org/0000-0002-4791-442X>),
   Lawrence Philips [ctb] (Double Metaphone)
 Maintainer: J. Aravind <j.aravind@icar.gov.in>
 Repository: CRAN
-Date/Publication: 2023-05-23 06:00:02 UTC
+Date/Publication: 2023-08-31 22:10:16 UTC
