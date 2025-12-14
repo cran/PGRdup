@@ -1,6 +1,6 @@
 ### This file is part of 'PGRdup' package for R.
 
-### Copyright (C) 2014-2023, ICAR-NBPGR.
+### Copyright (C) 2014-2025, ICAR-NBPGR.
 #
 # PGRdup is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -23,14 +23,14 @@
 #' @title The PGRdup Package
 #' @name PGRdup-package
 #' @aliases PGRdup
-#' @docType package
-#' @author J Aravind \email{aravindj@@nbpgr.ernet.in} \cr J Radhamani 
-#'   \email{radhamani@@nbpgr.ernet.in} \cr Kalyani Srinivasan 
-#'   \email{kalyani@@nbpgr.ernet.in} \cr B Ananda Subhash 
+#' @author J Aravind \email{j.aravind@@icar.org.in} \cr J Radhamani 
+#'   \email{jalli.radhamani@@icar.gov.in} \cr Kalyani Srinivasan 
+#'   \email{kalyani.srinivasan@@icar.gov.in} \cr B Ananda Subhash 
 #'   \email{anandasubhash@@gmail.com} \cr RK Tyagi
-#'   \email{rktyagi@@nbpgr.ernet.in}
+#'   \email{rishi.tyagi@@icar.gov.in}
 #' @import data.table
 #' @import igraph
 #' @import stringdist
 #' @importFrom stringi stri_split_fixed
-NULL
+#' @keywords internal
+"_PACKAGE"

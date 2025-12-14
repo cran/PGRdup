@@ -1,10 +1,10 @@
 Package: PGRdup
 Title: Discover Probable Duplicates in Plant Genetic Resources
         Collections
-Version: 0.2.3.9
+Version: 0.2.4.0
 Authors@R: c(
     person(given = "J.", family = "Aravind",
-           email = "j.aravind@icar.gov.in",
+           email = "j.aravind@icar.org.in",
            role = c("aut", "cre"),
 		       comment = c(ORCID = "0000-0002-4791-442X")),
     person(given = "J.", family = "Radhamani",
@@ -21,7 +21,7 @@ Authors@R: c(
 		       role = "aut"),
     person("ICAR-NBGPR",
            role = "cph",
-		       comment = c(url = "www.nbpgr.ernet.in")),
+		       comment = c(url = "https://nbpgr.org.in/")),
     person(given = "Maurice", family = "Aubrey",
            email = "maurice@hevanet.com",
            comment = "Double Metaphone",
@@ -45,12 +45,12 @@ Imports: data.table (>= 1.9.3), igraph, stringdist (>= 0.9.4), stringi,
         ggplot2, grid, gridExtra, methods, utils, stats
 Suggests: diagram, wordcloud, microbenchmark, XML, httr, RCurl, knitr,
         rmarkdown, pander
-Copyright: 2014-2023, ICAR-NBPGR
+Copyright: 2014-2025, ICAR-NBPGR
 License: GPL-2 | GPL-3
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 URL: https://cran.r-project.org/package=PGRdup,
         https://github.com/aravind-j/PGRdup,
         https://doi.org/10.5281/zenodo.841963,
@@ -58,16 +58,16 @@ URL: https://cran.r-project.org/package=PGRdup,
         https://www.rdocumentation.org/packages/PGRdup
 BugReports: https://github.com/aravind-j/PGRdup/issues
 NeedsCompilation: yes
-Packaged: 2023-08-31 17:00:05 UTC; J. Aravind
-Author: J. Aravind [aut, cre] (<https://orcid.org/0000-0002-4791-442X>),
+Packaged: 2025-12-13 16:55:21 UTC; aravi
+Author: J. Aravind [aut, cre] (ORCID: <https://orcid.org/0000-0002-4791-442X>),
   J. Radhamani [aut],
   Kalyani Srinivasan [aut],
   B. Ananda Subhash [aut],
   Rishi Kumar Tyagi [aut],
-  ICAR-NBGPR [cph] (www.nbpgr.ernet.in),
+  ICAR-NBGPR [cph] (url: https://nbpgr.org.in/),
   Maurice Aubrey [ctb] (Double Metaphone),
   Kevin Atkinson [ctb] (Double Metaphone),
   Lawrence Philips [ctb] (Double Metaphone)
-Maintainer: J. Aravind <j.aravind@icar.gov.in>
+Maintainer: J. Aravind <j.aravind@icar.org.in>
 Repository: CRAN
-Date/Publication: 2023-08-31 22:10:16 UTC
+Date/Publication: 2025-12-14 09:20:15 UTC

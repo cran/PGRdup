@@ -1,6 +1,6 @@
 ### This file is part of 'PGRdup' package for R.
 
-### Copyright (C) 2014-2023, ICAR-NBPGR.
+### Copyright (C) 2014-2025, ICAR-NBPGR.
 #
 # PGRdup is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -149,7 +149,7 @@
 #'   function, which is made use of here for string matching.
 #' @references van der Loo, M. P. J. 2014. "The Stringdist Package for
 #'   Approximate String Matching." \emph{R Journal} 6 (1):111-22.
-#'   \url{https://journal.r-project.org/archive/2014/RJ-2014-011/index.html}.
+#'   \url{https://journal.r-project.org/articles/RJ-2014-011/index.html}.
 #' @encoding UTF-8
 #' @examples
 #' 

@@ -9,10 +9,23 @@
 Functions to facilitate genebank managers in the identification of probable 
 duplicate accessions from plant genetic resources (PGR) passport databases.
 }
-\author{
-J Aravind \email{aravindj@nbpgr.ernet.in} \cr J Radhamani 
-  \email{radhamani@nbpgr.ernet.in} \cr Kalyani Srinivasan 
-  \email{kalyani@nbpgr.ernet.in} \cr B Ananda Subhash 
-  \email{anandasubhash@gmail.com} \cr RK Tyagi
-  \email{rktyagi@nbpgr.ernet.in}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://cran.r-project.org/package=PGRdup}
+  \item \url{https://github.com/aravind-j/PGRdup}
+  \item \doi{10.5281/zenodo.841963}
+  \item \url{https://aravind-j.github.io/PGRdup/}
+  \item \url{https://www.rdocumentation.org/packages/PGRdup}
+  \item Report bugs at \url{https://github.com/aravind-j/PGRdup/issues}
 }
+
+}
+\author{
+J Aravind \email{j.aravind@icar.org.in} \cr J Radhamani 
+  \email{jalli.radhamani@icar.gov.in} \cr Kalyani Srinivasan 
+  \email{kalyani.srinivasan@icar.gov.in} \cr B Ananda Subhash 
+  \email{anandasubhash@gmail.com} \cr RK Tyagi
+  \email{rishi.tyagi@icar.gov.in}
+}
+\keyword{internal}
