@@ -1,3 +1,13 @@
+# PGRdup 0.3.0
+
+## UPDATED FUNCTIONS:
+* `ProbDup` - Updated to make the computation more memory efficient. 
+
+# PGRdup 0.2.4.0
+
+## OTHER NOTES: 
+* Fixed the `checkRd` notes.
+
 # PGRdup 0.2.3.9
 
 ## OTHER NOTES: 

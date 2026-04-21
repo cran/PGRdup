@@ -1,6 +1,6 @@
 ### This file is part of 'PGRdup' package for R.
 
-### Copyright (C) 2014-2025, ICAR-NBPGR.
+### Copyright (C) 2014-2026, ICAR-NBPGR.
 #
 # PGRdup is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -30,7 +30,8 @@ if (getRversion() >= "2.15.1")  {
       "primdup", "SemanticdupID", "SemanticdupIDKW", "Seq",
       "SET_NO", "shape", "shape2", "singles", "SPLIT",
       "TEMP", "Total", "TYPE", "V1", "value",
-      "variable", "WITHIN", "ymax", "ymin"
+      "variable", "WITHIN", "ymax", "ymin",
+      "digit", "enc", "idkw", "keyword", "synset"
     )
   )
 }
